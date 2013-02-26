@@ -1,4 +1,4 @@
-# Bug in RequireJS / text! plugin
+# Embedding <del>bug</del> feature in RequireJS' text plugin
 
 When using the optimizer on a file containing something like the following (demo.js), I would expect all the files referenced by text! to be inlined, but only the first one (a.html) is actually being inlined.
 
@@ -21,6 +21,8 @@ require( [      "text!a.html", "text!b.html", "text!c.html"], function ( a, b, c
 } );
 ```
 
-Originally posted in the [RequireJS google group][https://groups.google.com/d/msg/requirejs/I7Egrku1w1Y/Co_Qtc1WZKEJ]
+Turns out you need to add ```findNestedDependencies: true``` for r.js to embed nested dependencies.
+
+Originally posted in the [RequireJS google group](https://groups.google.com/d/msg/requirejs/I7Egrku1w1Y/Co_Qtc1WZKEJ)
 
 
