@@ -36,6 +36,7 @@ import static org.junit.Assert.assertTrue;
 public class TicTacToeTest {
     @Test
     public void should_end_game_when_all_fields_are_taken() {
+        boolean isFinished = true;
         assertTrue(isFinished);
     }
 
