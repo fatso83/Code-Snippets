@@ -32,12 +32,16 @@ import static org.junit.Assert.assertTrue;
  *
  * @see <a href="http://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it">original article</a>
  * @see <a href="http://gojko.net/2009/02/27/thought-provoking-tdd-exercise-at-the-software-craftsmanship-conference/">Gojko's version</a>
+ * @see <a href="http://www.codersdojo.com/review/f80623b0fc6c2951dbcd8dc33f9dfb842212e788?page=19#first_modification">Stepwise TDD as if you meant it</a>
  */
 public class TicTacToeTest {
     @Test
     public void should_end_game_when_all_fields_are_taken() {
-        boolean isFinished = true;
-        assertTrue(isFinished);
+        assertTrue(isFinished());
+    }
+
+    private boolean isFinished() {
+        return true;
     }
 
 }
