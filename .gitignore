@@ -1,14 +1,8 @@
+**/*.iws
+**/*.iml
+**/*.ipr
+**/.idea
 
-embedding-problem/CFS_Widget_POC.iws
+*/atlassian-ide-plugin.xml
+*/embedding-problem/r.js
 
-embedding-problem/atlassian-ide-plugin.xml
-
-embedding-problem/fil
-
-embedding-problem/r.js
-
-embedding-problem/require-js-problem.iml
-
-embedding-problem/require-js-problem.ipr
-
-embedding-problem/require-js-problem.iws
