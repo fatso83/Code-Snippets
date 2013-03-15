@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * TDD as if you Meant It
  * <p/>
@@ -34,6 +36,7 @@ import org.junit.Test;
 public class TicTacToeTest {
     @Test
     public void should_end_game_when_all_fields_are_taken() {
+        assertTrue(isFinished);
     }
 
 }
