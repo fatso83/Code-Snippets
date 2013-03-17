@@ -60,6 +60,17 @@ public class TicTacToeTest {
 		fail("Should have failed");
 	}
 
+	@Test
+	public void players_should_take_turns(){
+		String current = "player1";
+		String lastPlayer = "player1";
+		try {
+		} catch (Exception e) {
+
+		};
+		fail("Should have failed");
+	}
+
 	private String takeCell(String cell, String player1) {
 		boolean taken = !cell.equals("not taken");
 		if(taken) throw new RuntimeException("Already taken");
