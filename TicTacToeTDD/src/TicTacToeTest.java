@@ -55,7 +55,6 @@ public class TicTacToeTest {
 		try {
 			String cell = "player2";
 			String player = "player1";
-			if(!cell.equals("not taken"))throw new Exception("Already taken");
 		} catch (Exception e) { //OK
 			return;
 		}
@@ -64,6 +63,7 @@ public class TicTacToeTest {
 
 	private String takeCell(String cell, String player1) {
 		boolean taken = !cell.equals("not taken");
+		if(!cell.equals("not taken"))throw new RuntimeException("Already taken");
 		if(!taken) cell = player1;
 		return cell;
 	}
