@@ -1,6 +1,7 @@
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * TDD as if you Meant It
@@ -43,17 +44,17 @@ import static org.junit.Assert.*;
  */
 public class TicTacToeTest {
 	@Test
-	public void a_player_can_take_a_field_that_is_not_taken(){
+	public void a_player_can_take_a_field_that_is_not_taken() {
 		String cell = "not taken";
 		String player1 = "player1";
-		cell = takeCell(cell, player1);
+		cell = Cell.takeCell(cell, player1);
 		assertEquals(cell, player1);
 	}
 
 	@Test
 	public void a_player_can_not_take_a_field_that_is_taken() {
 		try {
-			takeCell("player2", "player1");
+			Cell.takeCell("player2", "player1");
 		} catch (Exception e) { //OK
 			return;
 		}
@@ -61,7 +62,7 @@ public class TicTacToeTest {
 	}
 
 	@Test
-	public void players_should_take_turns(){
+	public void players_should_take_turns() {
 		String current = "player1";
 		String lastPlayer = "player1";
 		try {
@@ -69,17 +70,22 @@ public class TicTacToeTest {
 		} catch (Exception e) {
 			//ok
 			return;
-		};
+		}
+		;
 		fail("Should have failed");
 	}
 
 	private void checkNonRepeatingPlayer(String current, String lastPlayer) {
-		if(current.equals(lastPlayer)) throw new RuntimeException("Players must take turns playing");
+		if (current.equals(lastPlayer)) throw new RuntimeException("Players must take turns playing");
 	}
 
-	private String takeCell(String cell, String player1) {
+
+}
+
+class Cell {
+	static String takeCell(String cell, String player1) {
 		boolean taken = !cell.equals("not taken");
-		if(taken) throw new RuntimeException("Already taken");
+		if (taken) throw new RuntimeException("Already taken");
 
 		cell = player1;
 		return cell;
