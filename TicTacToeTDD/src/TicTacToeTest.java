@@ -42,13 +42,4 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="http://www.codersdojo.com/review/f80623b0fc6c2951dbcd8dc33f9dfb842212e788?page=19#first_modification">Stepwise TDD as if you meant it</a>
  */
 public class TicTacToeTest {
-	@Test
-	public void should_end_game_when_all_fields_are_taken() {
-		assertTrue(isFinished());
-	}
-
-	private boolean isFinished() {
-		return true;
-	}
-
 }
