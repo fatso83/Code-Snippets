@@ -47,8 +47,14 @@ public class TicTacToeTest {
 	@Test
 	public void a_player_can_take_a_field_that_is_not_taken(){
 		String cell = "not taken";
+		String player1 = "player1";
+		cell = takeCell(cell, player1);
+		assertEquals(cell, player1);
+	}
+
+	private String takeCell(String cell, String player1) {
 		boolean taken = !cell.equals("not taken");
-		if(!taken) cell = "player1";
-		assertEquals(cell, "player1");
+		if(!taken) cell = player1;
+		return cell;
 	}
 }
