@@ -46,8 +46,9 @@ import static org.junit.Assert.assertTrue;
 public class TicTacToeTest {
 	@Test
 	public void a_player_can_take_a_field_that_is_not_taken(){
-		boolean taken = false;
-		if(!taken) taken = true;
-		assertEquals(taken, true);
+		String cell = "not taken";
+		boolean taken = !cell.equals("not taken");
+		if(!taken) cell = "player1";
+		assertEquals(cell, "player1");
 	}
 }
