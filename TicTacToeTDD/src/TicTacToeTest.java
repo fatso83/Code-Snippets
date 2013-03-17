@@ -1,8 +1,6 @@
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * TDD as if you Meant It
@@ -50,6 +48,11 @@ public class TicTacToeTest {
 		String player1 = "player1";
 		cell = takeCell(cell, player1);
 		assertEquals(cell, player1);
+	}
+
+	@Test
+	public void a_player_can_not_take_a_field_that_is_taken() {
+		assertFalse(true);
 	}
 
 	private String takeCell(String cell, String player1) {
