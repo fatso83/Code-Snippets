@@ -65,12 +65,16 @@ public class TicTacToeTest {
 		String current = "player1";
 		String lastPlayer = "player1";
 		try {
-			if(current.equals(lastPlayer)) throw new RuntimeException("Players must take turns playing");
+			checkNonRepeatingPlayer(current, lastPlayer);
 		} catch (Exception e) {
 			//ok
 			return;
 		};
 		fail("Should have failed");
+	}
+
+	private void checkNonRepeatingPlayer(String current, String lastPlayer) {
+		if(current.equals(lastPlayer)) throw new RuntimeException("Players must take turns playing");
 	}
 
 	private String takeCell(String cell, String player1) {
