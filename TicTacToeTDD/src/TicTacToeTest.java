@@ -65,8 +65,10 @@ public class TicTacToeTest {
 		String current = "player1";
 		String lastPlayer = "player1";
 		try {
+			if(current.equals(lastPlayer)) throw new RuntimeException("Players must take turns playing");
 		} catch (Exception e) {
-
+			//ok
+			return;
 		};
 		fail("Should have failed");
 	}
