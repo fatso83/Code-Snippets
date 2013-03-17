@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -42,4 +44,8 @@ import static org.junit.Assert.assertTrue;
  * @see <a href="http://www.codersdojo.com/review/f80623b0fc6c2951dbcd8dc33f9dfb842212e788?page=19#first_modification">Stepwise TDD as if you meant it</a>
  */
 public class TicTacToeTest {
+	@Test
+	public void a_player_can_take_a_field_that_is_not_taken(){
+		assertEquals(false, true);
+	}
 }
