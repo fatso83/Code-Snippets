@@ -52,7 +52,12 @@ public class TicTacToeTest {
 
 	@Test
 	public void a_player_can_not_take_a_field_that_is_taken() {
-		assertFalse(true);
+		try {
+			String cell = "player2";
+			takeCell(cell, "player1");
+		} catch (Exception e) {
+		}
+		fail("Should have failed");
 	}
 
 	private String takeCell(String cell, String player1) {
