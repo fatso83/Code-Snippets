@@ -1,5 +1,7 @@
 #include <usb.h>
 #include <vector>
+#include <errno.h>
+#include <stdio.h>
 #include "usb_layer.h"
 
 using namespace std;
