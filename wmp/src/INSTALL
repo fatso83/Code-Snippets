@@ -1,0 +1,15 @@
+you need libusb.
+
+you can grab it from 
+http://libusb.sourceforge.net/
+
+for debian users: 
+apt-get install libusb-dev
+
+if you have installed libusb, you only need to do
+make
+
+to compile the program.
+(so you need to have a c++ compiler, make and so on....)
+
+

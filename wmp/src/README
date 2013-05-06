@@ -1,0 +1,68 @@
+hi,
+
+i have such a nice casio wmp-1 watch a very long time now. but i never
+had it running with linux. and today i surly have no win98 at hands
+to upload new songs... 
+
+so i nearly forgot that watch until Carl-Erik Kopseng wrote me an email
+that there is a guy who has reverse engeneered the watch. that guy
+is Martin Kiewitz.
+
+Carl-Erik sent me his OS/2 REXX source and i've spent a whole weekend on
+porting the rexx code to C++/libusb.
+(wow, i've never seen rexx before :) took me little time until i understood
+every line....)
+
+the porting of the usb-access functions was not so difficult.
+
+i'm sorry that the source-design is not very nice. but at the moment
+i have no time for a nicer rewrite. (many function-names and variables still
+come from Martin. and i dont like that many global variables very much)
+
+the program has 2 modes of operation.
+iteractive and playlist import.
+
+interactive allows you to upload/download/delete single files.
+to start the program in interactive mode, just dont pass any arguments.
+
+playlist mode is nice for every day operation.
+the program reads m3u files as generated from eg. xmms.
+
+one way i will use this program:
+	./wmp_manager -r big_playlist.m3u
+this way the playlist gets randomized before upload. so everyday i have
+another music collection.
+naturally not all songs in the playlist will fit on the watch (only 32MB
+:( not very much today...) but the program keeps running. eventually another
+shorter song will fit....
+
+if you have wishes or comments don't hesitate to send me an email to
+schmidt_florian at gmx.de
+
+by the way: no one forbids you to upload jsut any kind of files!
+you could for example upload your ssh private key... okay the watch dont
+knows what to do with it. but you can download it if you need it.
+(okay, you wont carry that ugly cradle everytime with you... :) )
+
+i love the idea of another project: 
+userfs for the wmp1
+so that you can mount the watch just as an usb-stick!!
+
+if i had more time i would start it!
+
+okay, enough for now. for more information look for the package from 
+Martin Kiewitz, he has nice readme's!
+
+as martin says in his readme's:
+	This software is 'e-mail ware'. This means, if you use it, please send
+	me an e-mail or a greeting card. I just want to see, how many people
+	are using it.
+so it would be nice, if you send me and martin an email, if you like that software!
+
+martin's hompage is here: http://www.ecomstation.ru/kiewitzsoft/
+i think there you will find his email (i dont want to post it here...)
+
+
+i hope you enjoy.
+
+flo.
