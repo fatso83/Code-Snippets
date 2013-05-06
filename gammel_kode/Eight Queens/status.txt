@@ -1,0 +1,10 @@
+Har en fungerende implementasjon av løsningen av "the 8 Queens Problem".
+Kan redefinere sjakkbrettet ved å gi kompilatoren opsjonen -D NMBR=størrelse
+Eksempelvis: #gcc main.c printing.c check.c -D NMBR=6 -o 8queens
+vil gi et løsningen for 6 dronninger på et 6x6 sjakkbrett.
+
+Per i dag skriver jeg bare ut løsningenen sammen med et pip, og det finnes ingen teller. Kommer til å endre litt på dette, og også fjerne alle 
+#ifdef DEBUG
+...
+#endif
+og litt annet rask.

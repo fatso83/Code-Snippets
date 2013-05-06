@@ -1,0 +1,33 @@
+Skal lage et program som oppretter et kundeobjekt.
+Kunden skal kunne legge til og slette varer.
+
+Oppretter en kunde med navn og adresse.
+Kunden har en vareliste.
+
+Varelisten er en lenket liste med varer der beskrivelsen legges i en 
+strengvariabel, og antall i en heltallsvariabel. Om det er flere varer
+opprettes en lenke til neste vare i listen - om ikke NULL.
+.
+
+Oppretter en kunde med navn og adresse.
+Kunden har en vareliste.
+
+Varelisten er en lenket liste med varer der beskrivelsen legges i en 
+strengvariabel, og antall i en heltallsvariabel. Om det er flere varer
+opprettes en lenke til neste vare i listen - om ikke NULL.
+
+
+Trenger:
+Customer* create_customer(char[] navn, char[] adresse)
+List* create_list(Customer customer)
+List* add_to_list(char[] identifier, int nmbr_of_items)  
+	//søk gjennom listen etter samme vare, hvis funnet, oppdater antall
+	//gi tilbake siste node i listen
+List* delete(List element)
+List* find( List list, char* identifier )
+
+
+Andre ideer:
+lage et JMP-table i Customer basert på switch-logikk?
+	// customer->jmp(ADD)   Husker ikke helt hvordan man lager dette...
+	

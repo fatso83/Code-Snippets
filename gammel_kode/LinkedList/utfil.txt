@@ -1,0 +1,73 @@
+
+ *** Customer List Test ***
+Oppgi ditt navn:
+		og din adresse:
+		
+
+Kundenavn: Carl-Erik
+Adresse:Borgestad
+
+
+Legg til en ting i handlevognen:Spesifiser antall
+Fil:list.c Linjenummer: 51
+Fil:list.c Linjenummer: 53
+NULL pointer (*p_node)! first_node=1
+Fil:list.c Linjenummer: 60
+Fil:list.c Linjenummer: 74
+Fil:list.c Linjenummer: 78
+
+First objekt
+
+list.c,L99
+Adressen til head=804A588
+Adressen til next=0
+Adressen til noden:804A588
+Du har lagt til 21	 "Badeball"
+Legg til en ting i handlevognen:Spesifiser antall
+Fil:list.c Linjenummer: 51
+Fil:list.c Linjenummer: 54
+NULL pointer! (*p_node)->next
+Fil:list.c Linjenummer: 60
+Fil:list.c Linjenummer: 74
+Fil:list.c Linjenummer: 78
+new_node->head=804A588
+list.c,L99
+Adressen til head=804A588
+Adressen til next=0
+Adressen til noden:804A5B0
+Du har lagt til 3	 "Tullball"
+Legg til en ting i handlevognen:Spesifiser antall
+Fil:list.c Linjenummer: 51
+Fil:list.c Linjenummer: 54
+NULL pointer! (*p_node)->next
+Fil:list.c Linjenummer: 60
+Fil:list.c Linjenummer: 74
+Fil:list.c Linjenummer: 78
+new_node->head=804A588
+list.c,L99
+Adressen til head=804A588
+Adressen til next=0
+Adressen til noden:804A5D8
+Du har lagt til 1001	 "Underbukser"
+Legg til en ting i handlevognen:Spesifiser antall
+Fil:list.c Linjenummer: 51
+Fil:list.c Linjenummer: 54
+NULL pointer! (*p_node)->next
+Fil:list.c Linjenummer: 60
+Fil:list.c Linjenummer: 74
+Fil:list.c Linjenummer: 78
+new_node->head=804A588
+list.c,L99
+Adressen til head=804A588
+Adressen til next=0
+Adressen til noden:804A600
+Du har lagt til 2	 "Badebukser"
+Legg til en ting i handlevognen:Spesifiser antall
+
+Her følger hva du har bestilt:
+Type: Badeball	Antall: 21
+Peker til neste objekt:804A5B0
+Type: Tullball	Antall: 3
+Peker til neste objekt:804A5D8
+Type: Underbukser	Antall: 1~Î@Peker ti4ôÿ¿¦
+

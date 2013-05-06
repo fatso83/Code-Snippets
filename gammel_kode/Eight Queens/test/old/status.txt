@@ -1,0 +1,5 @@
+working: printing of chess board
+	 collision detection
+not working/implemented:
+	 recursive backtracking placement of queens
+

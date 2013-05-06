@@ -1,0 +1,29 @@
+#define ID_LEN 30
+#define NAME_LEN 60
+#define ADR_LEN  100
+//#define NULL (*)0
+//#define NULL 000 //definert i stdio.h eller string.h?
+
+
+typedef struct LIST
+{
+	struct LIST *next;
+	char identifier[ID_LEN];
+	int number_of_items;
+} ListItem;
+
+typedef struct CUSTOMER
+{
+	ListItem* merchandice;
+	char name[NAME_LEN];
+	char adr[ADR_LEN];
+} Customer;
+
+
+Customer* create_customer(char*, char* );
+
+//søk gjennom listen etter samme vare, hvis funnet, oppdater antall
+//gi tilbake siste node i listen
+ListItem* add_to_list(ListItem* , char*, int);
+
+void 	delete(ListItem*);
