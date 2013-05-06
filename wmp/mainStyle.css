@@ -1,0 +1,85 @@
+body{
+	font-family: arial, helvetica, sans-serif;
+	line-height:20px;
+	font-size: 14px;
+	color: #000000;
+}
+
+td.index{
+	font-family: arial, helvetica, sans-serif;
+	line-height:20px;
+	font-size: 18px;
+	color: #000000;
+}
+
+p.intro	{
+	  font-family: arial, helvetica, sans-serif; 
+	  font-size: 16px;
+	  /*font-weight: bold;*/
+	  font-style: italic;
+	  text-align: left;
+
+	}		
+
+.quote {
+	font-family: courier new, lucida console, fixed;
+	font-size: smaller;
+	margin-bottom: 0px;
+	}
+
+.pic {	font-family: arial, helvetica, sans-serif;
+	width: 150px;
+	font-size: 10px;
+	color: #000000;
+	}
+	
+img.top	{
+	vertical-align: top;
+/*
+	position: relative;
+	top: 0px;
+*/
+	}
+
+img.bottom {vertical-align:bottom}
+
+p {
+	font-family: arial, helvetica, sans-serif;
+	line-height:20px;
+	font-size: 14px;
+	color: #000000;
+	}
+
+th{
+	text-align: left;
+}
+
+.error{
+	color: red;
+}
+
+.content{
+	border-style: ridge;
+}
+
+table.g{
+
+	background-image: 
+	url('line.png');
+	background-repeat: repeat-y
+}
+
+td.content{
+	border: 0;
+	}
+
+td.sidebar{
+	font-family: arial, helvetica, sans-serif;
+	line-height:20px;
+	font-size: 14px;
+	color: #000000;
+	}
+
+
+/*body {background-color: rgb(210,235,240);color: rgb(84,105,119) }
+table {background-color: rgb(210,235,240);color: rgb(84,105,119) }*/
