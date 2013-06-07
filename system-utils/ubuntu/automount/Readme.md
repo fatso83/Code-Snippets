@@ -5,7 +5,7 @@ on StackOverflow. The information was spread over several
 answers, and some were a bit outdated, so I tried to 
 compile all the information and put it here.
 
-The scripts have been found to be working on Ubuntu 10.10
+The scripts have been found to be working on Ubuntu 10.10 and 12.04.2 LTS
 If they do not work for you, try to see if there are tips
 in the original SO discussion (see below).
 You can then pass me that info, and maybe I will integrate
