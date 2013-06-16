@@ -11,6 +11,9 @@ def usage():
     print("USAGE:", sys.argv[0], " <email> <username> ")
     sys.exit(1);
 
+def essential_info_string(item):
+    return '[' + item['asin'] + ']  ' + h.unescape(item['title'])
+
 def fetch_bought_titles(offset=0, count=15):
     return fetch('queryOwnership_refactored2.html', offset, count)
 
@@ -70,5 +73,8 @@ if __name__ == '__main__':
     status_books = "Has bought %s e-book titles from Amazon. The last one is %s"
     print(status_docs % (docs['totalCount'], h.unescape(docs['items'][0]['title'])))
     print(status_books % (books['totalCount'], h.unescape(books['items'][0]['title'])))
+    print("Last 15 personal documents:")
+    for doc in docs['items'][:15]:
+        print(essential_info_string(doc).encode('utf-8'))
 
 
