@@ -4,6 +4,8 @@
 # @date June 20 2013
 # Requires: Python 3
 #
+# Inspired by studweb.py by Sindre FrÃ¸yn <sindrf@ifi.uio.no>, 2009
+#
 # It works by
 # - logging into studweb, 
 # - parsing the results 
