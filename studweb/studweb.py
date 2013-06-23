@@ -35,7 +35,8 @@ def init_session(ssn, pin_code):
 
     r = s.get(studweb)
     soup = BeautifulSoup(r.content)
-    inputs = soup.find_all('input')
+    form = soup.select("form[name=fnrForm]")[0]
+    inputs = soup.select("form[name=fnrForm] input") 
 
     attributes = [i.attrs for i in inputs]
     form_values = {}
@@ -43,18 +44,55 @@ def init_session(ssn, pin_code):
     for a in attributes:
         form_values[a.get('name')] = a.get('value')
 
-    # remove superfluous data
-    form_values.pop(None)
-
     form_values['fodselsnr'] = ssn
     form_values['pinkode'] = pin_code
 
+    # remove the field that says we need to get the pin by sms
+    form_values.pop('pinmail')
+
+    # set the submit action to be Logg inn
+    form_values['WOSubmitAction'] = "Logg inn"
+
     # This gets us in. The session cookies are crucial!
-    #s.post( amazon + '/ap/signin',
-    #        data = form_values,
-    #        allow_redirects=True )
-    print(form_values)
-    print(soup)
+    #debug(form_values)
+    #return
+    action = form['action']
+    #print(studweb + action)
+    r = s.post( studweb + action,
+            data = form_values,
+            allow_redirects=True )
+
+    # Når innlogget, husk å logge ut
+    return r
+
+def logout(html_page):
+    if not html_page: 
+        raise Exception("Missing legal string argument")
+    soup = BeautifulSoup(html_page)
+    link = soup.find_all('a',text=re.compile('Logg ut'))
+    check(link, "Could not find <a> tag with text \"Logg ut\"")
+    logoutUrl =  studweb + link[0]['href']
+    #return logoutUrl 
+    return s.get( logoutUrl )
+    
+def get_url_to_result_page(start_page):
+        soup = BeautifulSoup(start_page)
+        link = soup.find_all('a',text=re.compile('Se opplysninger om deg'))
+        check(link, "Could not find <a> tag with text \"Se opplysninger om deg\"")
+        r = s.get(studweb + link[0]['href'])
+        soup = BeautifulSoup(r.content)
+        link = soup.find_all("a", title="Se dine resultater")
+        check(link, "Could not find <a> tag with title \"Se dine resultater\"")
+        return studweb + link[0]['href']
+        
+
+def check(find_result, error_msg):
+        if not find_result:
+                raise Exception(error_msg)
+
+
+def debug(o):
+    print(str(o).encode('utf-8'))
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
@@ -63,4 +101,24 @@ if __name__ == '__main__':
     my_ssn = sys.argv[1]
     my_pin = sys.argv[2]
 
-    init_session(my_ssn, my_pin)
+    r = init_session(my_ssn, my_pin)
+    r=s.get(get_url_to_result_page(r.content))
+    soup = BeautifulSoup(r.content)
+    results_html = soup.prettify()
+    r= logout(r.content)
+
+    # parse the results table
+    result_table = soup.table.table
+    headers = result_table.find_all("th")
+    
+    index={}
+    for s in ['Semester', 'Emnekode', 'Resultat']:
+        hits = [ i for i, th in enumerate(headers) if th.text.find(s) >= 0 ]
+        assert len(hits) > 0, "Did not find a header with the name %s" % s
+        index[s]=hits[0]
+
+    # only find rows with non-blank 
+    relevant_trs = [tr 
+                    for tr in t.find_all('tr') 
+                    for i,c in enumerate(tr.children) 
+                    if i == 1 and c.text.strip()]
