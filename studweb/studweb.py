@@ -101,11 +101,16 @@ if __name__ == '__main__':
     my_ssn = sys.argv[1]
     my_pin = sys.argv[2]
 
-    r = init_session(my_ssn, my_pin)
-    r=s.get(get_url_to_result_page(r.content))
-    soup = BeautifulSoup(r.content)
-    results_html = soup.prettify()
-    r= logout(r.content)
+    # r = init_session(my_ssn, my_pin)
+    # r=s.get(get_url_to_result_page(r.content))
+    # soup = BeautifulSoup(r.content)
+    # results_html = soup.prettify()
+    #r= logout(r.content)
+    results_html = ""
+    f = open("results.html")
+    for line in f:
+	    results_html += line
+    soup = BeautifulSoup(results_html)
 
     # parse the results table
     result_table = soup.table.table
@@ -117,8 +122,18 @@ if __name__ == '__main__':
         assert len(hits) > 0, "Did not find a header with the name %s" % s
         index[s]=hits[0]
 
-    # only find rows with non-blank 
+    # only find rows with non-blank subject code
     relevant_trs = [tr 
-                    for tr in t.find_all('tr') 
+		    for tr in result_table.find_all('tr')[1:] #Skip the first row with headers 
                     for i,c in enumerate(tr.children) 
-                    if i == 1 and c.text.strip()]
+                    if i == index['Emnekode'] and c.text.strip()]
+
+
+    results=[]
+    value_key = [v,k for k,v in index]
+    for tr in relevant_trs:
+	    result = {}
+	    for i,c in enumerate(tr.find_all('td')):
+		    if i in value_key:
+			    result[key]=c.text
+	    results.append(result)
