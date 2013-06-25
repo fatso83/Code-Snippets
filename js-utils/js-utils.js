@@ -5,6 +5,10 @@
 
 /* A namespace for the utility functions to live in to prevent namespace pollution */
 (function (g) {
+
+	/* Local Underscore/Lo-Dash reference - if present */
+	var _ = g._;
+
 	var utilities = {
 
 		settings : {
@@ -106,7 +110,7 @@
 		},
 
 		/*********************************************************************************
-		** Utility functions that depend on the Underscore library
+		** Utility functions that depend on the Underscore or Lo-Dash library
 		*********************************************************************************/
 
 		/**
