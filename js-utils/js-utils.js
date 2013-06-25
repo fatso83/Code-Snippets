@@ -34,7 +34,7 @@
 			};
 		},
 
-
+    /** Attach this to textual input fields to prevent anything but legal characters */
 		preventIllegalInputInNumericField : function (evt) {
 			var theEvent = evt || window.event;
 			var key = theEvent.keyCode || theEvent.which;
