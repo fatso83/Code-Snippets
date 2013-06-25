@@ -93,6 +93,7 @@
 			return fullYear + "-" + pad(monthOfYear) + "-" + pad(dayOfMonth);
 		},
 
+    /** General comparison function to use with sorting functions */
 		stringComparitor : function (a, b) {
 			if (a < b) //sort string ascending
 			{
