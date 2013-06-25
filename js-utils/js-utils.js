@@ -103,6 +103,23 @@
 				return 1;
 			}
 			return 0; //default return value (no sorting)
+		},
+
+		/*********************************************************************************
+		** Utility functions that depend on the Underscore library
+		*********************************************************************************/
+
+		/**
+		 * Compares two objects and sees if any of the fields in <code>field_names</code> differ
+		 * @param {Object} a the a objects
+		 * @param {Object} b the object whose fields might differ from the a
+		 * @param {Array} fields the fields to compare
+		 * @return {Boolean} true if changed, false otherwise
+		 */
+		fieldsDiffer : function (a, b, fields) {
+			var fields_a = _.pick.apply(_, [a].concat(fields));
+			var fields_b = _.pick.apply(_, [b].concat(fields_a));
+			return (!_.isEqual(fields_a, fields_b));
 		}
 	};
 
