@@ -108,6 +108,6 @@
 
 	if (typeof(g.no) === "undefined") {g.no = {};}
 	if (!g.no.kopseng) { g.no.kopseng= {};}
-	if (!no.kopseng.jsutils) { g.no.kopseng.jsutils = utilities;}
+	if (!g.no.kopseng.jsutils) { g.no.kopseng.jsutils = utilities;}
 }(window));
 
