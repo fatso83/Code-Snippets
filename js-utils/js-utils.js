@@ -1,6 +1,7 @@
 /**
  * @author Carl-Erik Kopseng <carlerik@gmail.com>
- * @copyright None reserved. Use in whatever fashion you like, although a mention would be nice :) */
+ * @copyright None reserved. Use in whatever fashion you like, although a mention would be nice :)
+ * @date 2012->2013
  */
 
 /* A namespace for the utility functions to live in to prevent namespace pollution */
@@ -19,8 +20,9 @@
 		 *   Creates a timed function
 		 *   If the function is called before the timeout is reached, the timeout is reset, and started anew
 		 *
-		 *   @param timeout the timeout to wait
-		 *   @param fn the function to call
+		 *   @param {Function} fn the function to call
+		 *   @param {Number} timeout the timeout to wait in milliseconds
+		 *   @param {Object} [bindingObject] optional object to bind the function call to
 		 *
 		 *   Example:
 		 *   var i = 0;
@@ -30,15 +32,15 @@
 		 *   i === 1; // -> true
 		 *
 		 */
-		delayedResettingFunctionExecutor : function (fn, timeout) {
+		delayedResettingFunctionExecutor : function (fn, timeout, bindingObject) {
 			var timerId, functionToCall = fn;
 			return function () {
 				if (timerId) { clearTimeout(timerId); }
-				timerId = setTimeout(functionToCall, timeout);
+				timerId = setTimeout(functionToCall.bind(bindingObject), timeout);
 			};
 		},
 
-    /** Attach this to textual input fields to prevent anything but legal characters */
+		/** Attach this to textual input fields to prevent anything but legal characters */
 		preventIllegalInputInNumericField : function (evt) {
 			var theEvent = evt || window.event;
 			var key = theEvent.keyCode || theEvent.which;
@@ -97,7 +99,7 @@
 			return fullYear + "-" + pad(monthOfYear) + "-" + pad(dayOfMonth);
 		},
 
-    /** General comparison function to use with sorting functions */
+		/** General comparison function to use with sorting functions */
 		stringComparitor : function (a, b) {
 			if (a < b) //sort string ascending
 			{
@@ -110,8 +112,8 @@
 		},
 
 		/*********************************************************************************
-		** Utility functions that depend on the Underscore or Lo-Dash library
-		*********************************************************************************/
+		 ** Utility functions that depend on the Underscore or Lo-Dash library
+		 *********************************************************************************/
 
 		/**
 		 * Compares two objects and sees if any of the fields in <code>field_names</code> differ
@@ -128,7 +130,7 @@
 	};
 
 	if (typeof(g.no) === "undefined") {g.no = {};}
-	if (!g.no.kopseng) { g.no.kopseng= {};}
+	if (!g.no.kopseng) { g.no.kopseng = {};}
 	if (!g.no.kopseng.jsutils) { g.no.kopseng.jsutils = utilities;}
 }(window));
 
