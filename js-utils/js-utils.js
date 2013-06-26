@@ -1,7 +1,7 @@
 /**
  * @author Carl-Erik Kopseng <carlerik@gmail.com>
  * @copyright None reserved. Use in whatever fashion you like, although a mention would be nice :)
- * @date 2012->2013
+ * @date 2010-2013
  */
 
 (function (g) {
@@ -15,7 +15,8 @@
 			decimalSeparator : ",",
 
 			/* prevent namespace pollution */
-			namespace        : "no.kopseng.jsutils"
+			namespace        : "no.kopseng",
+      name             : "jsutils"
 		},
 
 		/**
