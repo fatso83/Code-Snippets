@@ -4,7 +4,6 @@
  * @date 2012->2013
  */
 
-/* A namespace for the utility functions to live in to prevent namespace pollution */
 (function (g) {
 
 	/* Local Underscore/Lo-Dash reference - if present */
@@ -13,7 +12,10 @@
 	var utilities = {
 
 		settings : {
-			decimalSeparator : ","
+			decimalSeparator : ",",
+
+			/* prevent namespace pollution */
+			namespace        : "no.kopseng.jsutils"
 		},
 
 		/**
@@ -126,11 +128,56 @@
 			var fields_a = _.pick.apply(_, [a].concat(fields));
 			var fields_b = _.pick.apply(_, [b].concat(fields_a));
 			return (!_.isEqual(fields_a, fields_b));
+		},
+
+		/**
+		 * Create a namespaced object in the current global scrope
+		 *
+		 * Will not overwrite currently existing objects, but might add to their properties
+		 * Will fail if any pre-existing overlapping names are not objects
+		 *
+		 * Example I: If there exists an object foo.bar.baz, where baz is an object, then
+		 *    createNameSpace("foo.bar.baz.babar") will succeed
+		 * Example II: If there exists an object foo.bar.baz, where baz is a string, then
+		 *    createNameSpace("foo.bar.baz.babar") will not succeed
+		 *
+		 * @param {String} namespace a namespace in dotted notation. E.g. "com.foo.barsoft.utils"
+		 * @returns a string of the _new_ (not pre-existing) parts of the namespace
+		 */
+		createNameSpace : function (namespace) {
+
+			function iter (current, existing) {
+				var match = current.match(/([a-zA-Z0-9]+)\.(.+)/),
+					first = current,
+					rest = "",
+					preExisting;
+
+				if (current === "") { return current; }
+
+				if (match) {
+					first = match[1];
+					rest = match[2];
+				}
+
+				preExisting = first in existing;
+				if (preExisting) {
+					if (typeof existing[first] !== "object") {
+						var errorMsg = "Could not create namespace " + namespace + ". Pre-existing part " + first + " is not an object";
+						throw new Error(errorMsg);
+					}
+				} else { existing[first] = {}; }
+
+				return (preExisting ? "" : first + ".") + iter(rest, existing[first]);
+			}
+
+			var created = iter(namespace, g);
+			// remove whitespace from returned string
+			if (created !== "") { created = created.match(/(.*)\.$/)[1]; }
+			return created;
 		}
 	};
 
-	if (typeof(g.no) === "undefined") {g.no = {};}
-	if (!g.no.kopseng) { g.no.kopseng = {};}
-	if (!g.no.kopseng.jsutils) { g.no.kopseng.jsutils = utilities;}
+	utilities.createNameSpace(utilities.settings.namespace);
+	g[utilities.settings.namespace] = utilities;
 }(window));
 
