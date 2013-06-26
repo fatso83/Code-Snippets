@@ -24,21 +24,16 @@
 		 *
 		 *   @param {Function} fn the function to call
 		 *   @param {Number} timeout the timeout to wait in milliseconds
-		 *   @param {Object} [bindingObject] optional object to bind the function call to
-		 *
-		 *   Example:
-		 *   var i = 0;
-		 *   var incrementer = delayedResettingFunctionExecuto(function { i++; }, 1000);
-		 *   //execute three calls sequentially that finish within a few millis
-		 *   incrementer();incrementer();incrementer();
-		 *   i === 1; // -> true
-		 *
+		 *   @param {Object} [bindingObject] object to bind the function call to
 		 */
 		delayedResettingFunctionExecutor : function (fn, timeout, bindingObject) {
 			var timerId, functionToCall = fn;
 			return function () {
+				var args = arguments;
 				if (timerId) { clearTimeout(timerId); }
-				timerId = setTimeout(functionToCall.bind(bindingObject), timeout);
+				timerId = setTimeout( function() {
+					functionToCall.apply(bindingObject, args);
+				}, timeout);
 			};
 		},
 
@@ -152,7 +147,7 @@
 					rest = "",
 					preExisting;
 
-				if (current === "") { return current; }
+				if (current === "") { return existing; }
 
 				if (match) {
 					first = match[1];
@@ -167,17 +162,15 @@
 					}
 				} else { existing[first] = {}; }
 
-				return (preExisting ? "" : first + ".") + iter(rest, existing[first]);
+				return iter(rest, existing[first]);
 			}
 
-			var created = iter(namespace, g);
-			// remove whitespace from returned string
-			if (created !== "") { created = created.match(/(.*)\.$/)[1]; }
-			return created;
+			return iter(namespace, g);
 		}
 	};
 
-	utilities.createNameSpace(utilities.settings.namespace);
-	g[utilities.settings.namespace] = utilities;
+	var o = utilities.createNameSpace(utilities.settings.namespace);
+	o[utilities.settings.name] = utilities;
 }(window));
+
 
