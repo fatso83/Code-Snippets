@@ -114,8 +114,8 @@
 
 		/**
 		 * Compares two objects and sees if any of the fields in <code>field_names</code> differ
-		 * @param {Object} a the a objects
-		 * @param {Object} b the object whose fields might differ from the a
+		 * @param {Object} a the a object
+		 * @param {Object} b the object whose fields might differ from a
 		 * @param {Array} fields the fields to compare
 		 * @return {Boolean} true if changed, false otherwise
 		 */
