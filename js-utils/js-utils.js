@@ -4,19 +4,17 @@
  * @date 2010-2013
  */
 
-(function (g) {
+var o = (function (g) {
 
 	/* Local Underscore/Lo-Dash reference - if present */
 	var _ = g._;
 
+  /** @class UtilityLibrary */
 	var utilities = {
+    /** @lends {UtilityLibrary} */
 
 		settings : {
 			decimalSeparator : ",",
-
-			/* prevent namespace pollution */
-			namespace        : "no.kopseng",
-      name             : "jsutils"
 		},
 
 		/**
@@ -168,10 +166,14 @@
 
 			return iter(namespace, g);
 		}
+
+    return utilities;
 	};
 
-	var o = utilities.createNameSpace(utilities.settings.namespace);
-	o[utilities.settings.name] = utilities;
 }(window));
 
+o.createNameSpace("no.kopseng.jsutils");
+
+/** @type UtilityLibrary */
+window.no.kopseng.jsutils = o;
 
