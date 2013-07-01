@@ -4,175 +4,197 @@
  * @date 2010-2013
  */
 
+/** @type UtilityLibrary */
 var o = (function (g) {
 
-    /* Local Underscore/Lo-Dash reference - if present */
-    var _ = g._;
+	var settings = {
+		decimalSeparator : ","
+	};
 
-    /** @class UtilityLibrary */
-    var utilities = {
-        /** @lends {UtilityLibrary} */
+	/** @class UtilityLibrary */
+	return {
+		/** @lends {UtilityLibrary} */
 
-        settings : {
-            decimalSeparator : ",",
-        },
+		/**
+		 *   Creates a timed function
+		 *   If the function is called before the timeout is reached, the timeout is reset, and started anew
+		 *
+		 *   @param {Function} fn the function to call
+		 *   @param {Number} timeout the timeout to wait in milliseconds
+		 *   @param {Object} [bindingObject] object to bind the function call to
+		 */
+		deferredResettingFunctionExecutor : function (fn, timeout, bindingObject) {
+			var timerId, functionToCall = fn;
+			return function () {
+				var args = arguments;
+				if (timerId) { clearTimeout(timerId); }
+				timerId = setTimeout(function () {
+					functionToCall.apply(bindingObject, args);
+				}, timeout);
+			};
+		},
 
-        /**
-         *   Creates a timed function
-         *   If the function is called before the timeout is reached, the timeout is reset, and started anew
-         *
-         *   @param {Function} fn the function to call
-         *   @param {Number} timeout the timeout to wait in milliseconds
-         *   @param {Object} [bindingObject] object to bind the function call to
-         */
-        delayedResettingFunctionExecutor : function (fn, timeout, bindingObject) {
-            var timerId, functionToCall = fn;
-            return function () {
-                var args = arguments;
-                if (timerId) { clearTimeout(timerId); }
-                timerId = setTimeout( function() {
-                    functionToCall.apply(bindingObject, args);
-                }, timeout);
-            };
-        },
+		/**
+		 *  Attach this to textual input fields to prevent anything but legal characters
+		 *  @return {Boolean} true if the input was legal, false otherwise
+		 */
+		preventIllegalInputInNumericField : function (evt) {
+			var theEvent = evt || window.event;
+			var key = theEvent.keyCode || theEvent.which;
+			if (!this.isLegalInputForNumericField(key)) {
+				theEvent.returnValue = false;
+				if (theEvent.preventDefault) { theEvent.preventDefault();}
+				return false;
+			}
+			return true;
+		},
 
-        /** Attach this to textual input fields to prevent anything but legal characters */
-        preventIllegalInputInNumericField : function (evt) {
-            var theEvent = evt || window.event;
-            var key = theEvent.keyCode || theEvent.which;
-            if (!this.isLegalInputForNumericField(key)) {
-                theEvent.returnValue = false;
-                if (theEvent.preventDefault) { theEvent.preventDefault();}
-            }
-        },
+		isLegalInputForNumericField : function (keyCode) {
+			var character = String.fromCharCode(keyCode);
+			return (this.isNumber(character) ||
+				this.isLegalSpecialKey(keyCode) ||
+				character === settings.decimalSeparator);
+		},
 
-        isLegalInputForNumericField : function (keyCode) {
-            var character = String.fromCharCode(keyCode);
-            return (this.isNumber(character) ||
-                    this.isLegalSpecialKey(keyCode) ||
-                    character === this.settings.decimalSeparator);
-        },
+		isNumber : function (stringKey) {
+			return (/[0-9]/).test(stringKey);
+		},
 
-        isNumber : function (stringKey) {
-            return (/[0-9]/).test(stringKey);
-        },
+		isLegalSpecialKey : function (keyCode) {
+			var keyCodes = {
+				BACKSPACE : 8,
+				TAB       : 9,
+				ENTER     : 13,
+				ESC       : 27,
+				SPACE     : 32,
+				LEFT      : 37,
+				UP        : 38,
+				RIGHT     : 39,
+				DOWN      : 40,
+				DEL       : 46
+			};
+			for (var key in keyCodes) {
+				if (keyCodes[key] === keyCode) {
+					return true;
+				}
+			}
+			return false;
+		},
 
-        isLegalSpecialKey : function (keyCode) {
-            var keyCodes = {
-                BACKSPACE : 8,
-                TAB       : 9,
-                ENTER     : 13,
-                ESC       : 27,
-                SPACE     : 32,
-                LEFT      : 37,
-                UP        : 38,
-                RIGHT     : 39,
-                DOWN      : 40,
-                DEL       : 46
-            };
-            for (var key in keyCodes) {
-                if (keyCodes[key] === keyCode) {
-                    return true;
-                }
-            }
-            return false;
-        },
+		/**
+		 * create iso date string
+		 * @param {Date} date
+		 * @return {String} iso
+		 */
+		isoDateString : function (date) {
+			var dayOfMonth = date.getDate(),
+				monthOfYear = date.getMonth() + 1,
+				fullYear = date.getFullYear();
 
-        /**
-         * create iso date string
-         * @param {Date} date
-         * @return {String} iso
-         */
-        isoDateString : function (date) {
-            var dayOfMonth = date.getDate(),
-            monthOfYear = date.getMonth() + 1,
-            fullYear = date.getFullYear();
+			function pad (num) {
+				return (num < 10) ? "0" + num : "" + num;
+			}
 
-            function pad (num) {
-                return (num < 10) ? "0" + num : "" + num;
-            }
+			return fullYear + "-" + pad(monthOfYear) + "-" + pad(dayOfMonth);
+		},
 
-            return fullYear + "-" + pad(monthOfYear) + "-" + pad(dayOfMonth);
-        },
+		/** General comparison function to use with sorting functions */
+		stringComparitor : function (a, b) {
+			if (a < b) //sort string ascending
+			{
+				return -1;
+			}
+			if (a > b) {
+				return 1;
+			}
+			return 0; //default return value (no sorting)
+		},
 
-        /** General comparison function to use with sorting functions */
-        stringComparitor : function (a, b) {
-            if (a < b) //sort string ascending
-                {
-                    return -1;
-                }
-                if (a > b) {
-                    return 1;
-                }
-                return 0; //default return value (no sorting)
-        },
+		/**
+		 * Compares two objects and sees if any of the fields in <code>field_names</code> differ
+		 * Does not do any checking on whether the field is inherited through the prototype chain
+		 *
+		 * @param {Object} a the a object
+		 * @param {Object} b the object whose fields might differ from a
+		 * @param {Array} field_names the fields to compare
+		 * @return {Boolean} true if changed, false otherwise
+		 */
+		fieldsDiffer : function (a, b, field_names) {
+			for (var i = 0, len = field_names.length; i < len; i++) {
+				var field = field_names[i];
+				if (a[ field] !== b[field]) {
+					return true;
+				}
+			}
+			return false;
+		},
 
-        /*********************************************************************************
-         ** Utility functions that depend on the Underscore or Lo-Dash library
-         *********************************************************************************/
+		/**
+		 * Create a namespaced object in <code>rootObject</code>
+		 *
+		 * Will not overwrite currently existing objects, but might add to their properties
+		 * Will fail if any pre-existing overlapping names are not objects
+		 *
+		 * Example I: If there exists an object foo.bar.baz, where baz is an object, then
+		 *    createObjectHierarchy("foo.bar.baz.babar") will succeed
+		 * Example II: If there exists an object foo.bar.baz, where baz is a string, then
+		 *    createObjectHierarchy("foo.bar.baz.babar") will not succeed
+		 *
+		 * @param {String} namespace a namespace in dotted notation. E.g. "com.foo.barsoft.utils"
+		 * @param {Object} [rootObject] root object to create the hierarcy in. If left out, use the library's default global object given at initialization, usually window;
+		 * @returns the namespaces object
+		 */
+		createObjectHierarchy : function (namespace, rootObject) {
+			if (!rootObject) { rootObject = g;}
 
-        /**
-         * Compares two objects and sees if any of the fields in <code>field_names</code> differ
-         * @param {Object} a the a object
-         * @param {Object} b the object whose fields might differ from a
-         * @param {Array} fields the fields to compare
-         * @return {Boolean} true if changed, false otherwise
-         */
-        fieldsDiffer : function (a, b, fields) {
-            var fields_a = _.pick.apply(_, [a].concat(fields));
-            var fields_b = _.pick.apply(_, [b].concat(fields_a));
-            return (!_.isEqual(fields_a, fields_b));
-        },
+			function iter (current, existing) {
+				var match = current.match(/([a-zA-Z0-9]+)\.(.+)/),
+					first = current,
+					rest = "",
+					preExisting;
 
-        /**
-         * Create a namespaced object in the current global scrope
-         *
-         * Will not overwrite currently existing objects, but might add to their properties
-         * Will fail if any pre-existing overlapping names are not objects
-         *
-         * Example I: If there exists an object foo.bar.baz, where baz is an object, then
-         *    createNameSpace("foo.bar.baz.babar") will succeed
-         * Example II: If there exists an object foo.bar.baz, where baz is a string, then
-         *    createNameSpace("foo.bar.baz.babar") will not succeed
-         *
-         * @param {String} namespace a namespace in dotted notation. E.g. "com.foo.barsoft.utils"
-         * @returns a string of the _new_ (not pre-existing) parts of the namespace
-         */
-        createNameSpace : function (namespace) {
+				if (current === "") { return existing; }
 
-            function iter (current, existing) {
-                var match = current.match(/([a-zA-Z0-9]+)\.(.+)/),
-                first = current,
-                rest = "",
-                preExisting;
+				if (match) {
+					first = match[1];
+					rest = match[2];
+				}
 
-                if (current === "") { return existing; }
+				preExisting = first in existing;
+				if (preExisting && existing[first] !== null) {
+					if (typeof existing[first] !== "object") {
+						var errorMsg = "Could not create namespace " + namespace + ". Pre-existing part " + first + " is not an object";
+						throw new Error(errorMsg);
+					}
+				} else { existing[first] = {}; }
 
-                if (match) {
-                    first = match[1];
-                    rest = match[2];
-                }
+				return iter(rest, existing[first]);
+			}
 
-                preExisting = first in existing;
-                if (preExisting) {
-                    if (typeof existing[first] !== "object") {
-                        var errorMsg = "Could not create namespace " + namespace + ". Pre-existing part " + first + " is not an object";
-                        throw new Error(errorMsg);
-                    }
-                } else { existing[first] = {}; }
+			return iter(namespace, rootObject);
+		},
 
-                return iter(rest, existing[first]);
-            }
+		/**
+		 * @param {Boolean} condition
+		 * @param {String} [msg]
+		 */
+		preCondition : function (condition, msg) {
+			if (!condition) {
+				throw new Error(msg ? msg : "Precondition failed!");
+			}
+		},
 
-            return iter(namespace, g);
-        }
+		isBlank : function (s) {
+			return this.isEmpty(s.trim());
+		},
 
-        return utilities;
-    };
-
+		isEmpty : function (s) {
+			return s.length === 0;
+		}
+	};
 }(window));
 
-o.createNameSpace("no.kopseng.jsutils");
+o.createObjectHierarchy("no.kopseng.jsutils");
 
 /** @type UtilityLibrary */
 window.no.kopseng.jsutils = o;
