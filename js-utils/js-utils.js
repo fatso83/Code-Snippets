@@ -6,13 +6,14 @@
 
 /** @type UtilityLibrary */
 var o = (function (g) {
+	"use strict";
 
 	var settings = {
 		decimalSeparator : ","
 	};
 
 	/** @class UtilityLibrary */
-	return {
+	var self = {
 		/** @lends {UtilityLibrary} */
 
 		/**
@@ -22,6 +23,7 @@ var o = (function (g) {
 		 *   @param {Function} fn the function to call
 		 *   @param {Number} timeout the timeout to wait in milliseconds
 		 *   @param {Object} [bindingObject] object to bind the function call to
+		 *   @returns {Function} the created function
 		 */
 		deferredResettingFunctionExecutor : function (fn, timeout, bindingObject) {
 			var timerId, functionToCall = fn;
@@ -175,6 +177,42 @@ var o = (function (g) {
 		},
 
 		/**
+		 * Test if a namespaced object exists
+		 *
+		 * Example: test if there exists a namespaced object 'foo.bar' in window:
+		 *  objectHierarchyExists('foo.bar', window)
+		 *
+		 * @param {String} namespace a namespace in dotted notation. E.g. "com.foo.barsoft.utils"
+		 * @param {Object} rootObject root object the hierarcy lives in in.
+		 * @returns {Boolean} true if it exists and is not null or undefined
+		 */
+		nestedObjectExists: function (namespace, rootObject) {
+			this.preCondition(typeof namespace === "string" && namespace.length > 0);
+			this.preCondition(rootObject && typeof rootObject === "object");
+
+			/* helper function */
+			function iter (current, existing) {
+				var match = current.match(/([a-zA-Z0-9]+)\.(.+)/),
+					first = current,
+					rest = "",
+					preExisting;
+
+				if (current === "") { return existing; }
+
+				if (match) {
+					first = match[1];
+					rest = match[2];
+				}
+
+				preExisting = first in existing;
+				if (preExisting && self.isUndefinedOrNull(existing[first])) { return false; }
+				return preExisting && iter(rest, existing[first]);
+			}
+
+			return !!iter(namespace, rootObject);
+		},
+
+		/**
 		 * @param {Boolean} condition
 		 * @param {String} [msg]
 		 */
@@ -184,14 +222,26 @@ var o = (function (g) {
 			}
 		},
 
+		/**
+		 * Same contract as preCondition, only semantic difference
+		 * @see UtilityLibrary.preCondition
+		 */
+		assert : function(condition, msg) { this.preCondition(condition, msg);},
+
 		isBlank : function (s) {
 			return this.isEmpty(s.trim());
 		},
 
 		isEmpty : function (s) {
 			return s.length === 0;
+		},
+
+		isUndefinedOrNull : function (o) {
+			return o === null || o === undefined;
 		}
+
 	};
+	return self;
 }(window));
 
 o.createObjectHierarchy("no.kopseng.jsutils");
