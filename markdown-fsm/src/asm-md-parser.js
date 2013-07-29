@@ -1,7 +1,17 @@
 (function () {
 	var AbstractStateMachine = require("./abstract-state-machine"),
 		asm = new AbstractStateMachine,
-		inputString, outputString;
+		inputStrings, index = 0, outputString;
+
+	function parse (markdownString) {
+		inputStrings = markdownString.split("\n");
+		asm.run();
+		return outputString;
+	}
+
+	function nextLine() {
+		return inputStrings[index++];
+	}
 
 	asm.addState("initial", function (result) {
 		return { handler : "header", cargo : ""};
@@ -13,12 +23,6 @@
 		outputString = result;
 	}, true);
 	asm.setStartState("initial");
-
-	function parse (markdownString) {
-		inputString = markdownString;
-		asm.run(markdownString);
-		return outputString;
-	}
 
 	/** Export module if we are running in Node, add it to the global namespace otherwise */
 	if (typeof window !== "undefined") {
