@@ -19,6 +19,9 @@
 	asm.addState("header", function(result) {
 		return { handler : "input finished", cargo : result + "<h1> a header</h1>"};
 	}, false);
+	asm.addState("paragraph", function(result) {
+		return { handler : "input finished", cargo : result + "<h1> a header</h1>"};
+	}, false);
 	asm.addState("input finished", function(result) {
 		outputString = result;
 	}, true);
