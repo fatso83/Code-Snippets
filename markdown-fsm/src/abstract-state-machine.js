@@ -10,6 +10,7 @@
 		this.handlers = [];
 		this.startState = null;
 		this.endStates = [];
+		this.DEBUG = false;
 	}
 
 	/**
@@ -42,6 +43,8 @@
 			 */
 				nextStep;
 
+		if(this.DEBUG) console.log("\nStarting new run");
+
 		cargo = startCargo;
 		handlerName = this.startState;
 		if (!handlerName) {
@@ -54,6 +57,8 @@
 
 		do {
 			handler = this.handlers[ handlerName];
+			if(!handler) throw new Error("'" + handlerName + "' is not a handler");
+			if(this.DEBUG) {console.log("Entering state " + handlerName)}
 			nextStep = handler(cargo);
 			if (_(this.endStates).contains(handlerName)) { break; }
 

@@ -1,29 +1,99 @@
 (function () {
-	var AbstractStateMachine = require("./abstract-state-machine"),
-		asm = new AbstractStateMachine,
-		inputStrings, index = 0, outputString;
+	var AbstractStateMachine = require("./abstract-state-machine")
+		, asm = new AbstractStateMachine
+		, inputStrings
+		, index
+		, outputString
+		, BLANK_LINE = /^\s*$/
+		, HEADER_LINE = /^#.+/
+		, DEBUG = false;
+
+	asm.DEBUG = DEBUG;
 
 	function parse (markdownString) {
 		inputStrings = markdownString.split("\n");
-		asm.run();
+		index = -1;
+		asm.run(["",""]);
 		return outputString;
 	}
 
-	function nextLine() {
-		return inputStrings[index++];
+	function hasNext () {
+		if(DEBUG) console.log("Current index = " + index)
+		return index + 1 < inputStrings.length;
 	}
 
-	asm.addState("initial", function (result) {
-		return { handler : "header", cargo : ""};
+	function nextLine () {
+		index += 1;
+		return inputStrings[ index ];
+	}
+
+	asm.addState("initial", function (cargo) {
+		var s, handler;
+
+		if (!hasNext()) {
+			handler = "input finished";
+		}
+		else {
+			s = nextLine();
+			if (BLANK_LINE.test(s)) { handler = "initial" }
+			else if (HEADER_LINE.test(s)) { handler = "header" }
+			else { handler = "paragraph start"; }
+		}
+
+		return { handler : handler, cargo : [s, cargo[1]] };
 	}, false);
-	asm.addState("header", function(result) {
-		return { handler : "input finished", cargo : result + "<h1> a header</h1>"};
+
+	asm.addState("header", function (cargo) {
+		var handler
+			, result = cargo[1] + "<h1>" + cargo[0].substr(1) + "</h1>" ;
+
+		if(hasNext()) handler = "initial";
+		else handler = "input finished";
+
+		return { handler : handler, cargo : [null, result] };
 	}, false);
-	asm.addState("paragraph", function(result) {
-		return { handler : "input finished", cargo : result + "<h1> a header</h1>"};
+
+	asm.addState("paragraph start", function (cargo) {
+		var result = cargo[1] + "<p>" + cargo[0]
+			, s
+			, handler;
+
+		if (!hasNext()) {
+			handler = "paragraph end";
+		} else {
+			s = nextLine();
+			if(s.match(BLANK_LINE)) handler = "paragraph end";
+			else handler = "paragraph in";
+		}
+
+		return { handler : handler, cargo : [s, result]};
 	}, false);
-	asm.addState("input finished", function(result) {
-		outputString = result;
+
+	asm.addState("paragraph in", function(cargo) {
+		var handler
+			, currentLine = cargo[0]
+			, result = cargo[1] + "\n" + currentLine;
+
+		if(!hasNext()) handler = "paragraph end";
+		else {
+			currentLine = nextLine();
+			if(currentLine.match(BLANK_LINE)) handler = "paragraph end";
+			else  handler = "paragraph in";
+		}
+
+		return { handler : handler, cargo : [currentLine, result]};
+	},false);
+
+	asm.addState("paragraph end", function (cargo) {
+		var result;
+
+		result = cargo[1] + "</p>";
+
+		return { handler : "initial", cargo : [null, result] };
+	}, false);
+
+	asm.addState("input finished", function (cargo) {
+		outputString = cargo[1];
 	}, true);
 	asm.setStartState("initial");
 
