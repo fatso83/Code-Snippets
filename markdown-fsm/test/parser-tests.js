@@ -58,3 +58,4 @@ function parserTests (parser) {
 
 // Test all the different implementations agains the same interface
 parserTests(require("../src/asm-md-parser"));
+parserTests(require("../src/switch-md-parser"));
