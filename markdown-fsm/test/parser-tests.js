@@ -1,6 +1,6 @@
 var expect = require("expect.js");
 
-function parserTests (parser) {
+function parserTests (name, parser) {
 	var lorem = [
 			"Lorem ipsum dolor sit amet,",
 			" consectetur adipisicing elit, ",
@@ -10,7 +10,7 @@ function parserTests (parser) {
 		, HEADER = "# a header"
 		, CONVERTED_HEADER = "<h1> a header</h1>";
 
-	describe('parse', function () {
+	describe(name + ': parse()', function () {
 		it('should convert a hash-prefixed line to h1 header', function () {
 			expect(parser.parse(HEADER)).to.eql(CONVERTED_HEADER);
 		});
@@ -57,5 +57,5 @@ function parserTests (parser) {
 }
 
 // Test all the different implementations agains the same interface
-parserTests(require("../src/asm-md-parser"));
-parserTests(require("../src/switch-md-parser"));
+parserTests("Abstract State Machine", require("../src/asm-md-parser"));
+parserTests("Basic Switch Based FSM", require("../src/switch-md-parser"));
