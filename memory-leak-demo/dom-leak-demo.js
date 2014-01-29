@@ -105,7 +105,6 @@ function createMany (num) {
 
 ns.LoadingLoader.prototype.silent = true;
 
-if(!gc) console.log('Enable garbage collection in Chrome with --js-flags="--expose-gc"');
 var seconds = 3000,
 	showCreateHeapMessage = console.log.bind(console, "Create heap snapshot now!"),
 	createStep = function (action, message) {
@@ -114,7 +113,6 @@ var seconds = 3000,
 			var nextStep = nextSteps.shift();
 			action();
 			showCreateHeapMessage(message);
-			if(gc)gc();
 
 			if(nextStep) setTimeout(nextStep.bind(null, nextSteps), seconds);
 		}
