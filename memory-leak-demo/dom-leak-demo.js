@@ -1,6 +1,6 @@
 /* DOM leak demo
 *
-* @author Carl-Erik Kopseng, github.com/fatso83
+* https://github.com/fatso83/Code-Snippets/tree/master/memory-leak-demo
 *
 * Shows the various stages of memory leaks of a typical dom handling object
 * - creation, deletion of internal references to dom, removing all dom elements, deleting references to the objects
@@ -105,7 +105,7 @@ function createMany (num) {
 
 ns.LoadingLoader.prototype.silent = true;
 
-var seconds = 3000,
+var seconds = 300,
 	showCreateHeapMessage = console.log.bind(console, "Create heap snapshot now!"),
 	createStep = function (action, message) {
 		return function (nextSteps) {
@@ -123,10 +123,12 @@ var seconds = 3000,
 	steps = [
 		createStep(function () { document.body.innerHTML = ''; }, "before creation"),
 		createStep(createMany.bind(null, 10000), "after creation"),
-		createStep([].map.bind(created, function (elem) { elem.destroy(); }), "after object self destruction"),
+		createStep(function() { created.map(function (elem) { elem.destroy(); }); }, "after object self destruction"),
 		createStep(function () { document.body.innerHTML = ''; }, "after removing all dom elements"),
 		createStep(function () { created = []; }, "after deleting remaining references")
 	],
 	startStepping = function () { steps[0](steps.slice(1)); };
 
-startStepping();
+//startStepping();
+//steps=[];
+document.body.innerHTML = '';
