@@ -109,12 +109,15 @@ var seconds = 3000,
 	showCreateHeapMessage = console.log.bind(console, "Create heap snapshot now!"),
 	createStep = function (action, message) {
 		return function (nextSteps) {
-			if(!nextSteps) throw new Error(message);
-			var nextStep = nextSteps.shift();
+			if (!nextSteps) throw new Error("Missing next steps to execute");
+
 			action();
 			showCreateHeapMessage(message);
 
-			if(nextStep) setTimeout(nextStep.bind(null, nextSteps), seconds);
+			if (nextSteps.length > 0) {
+				var nextStep = nextSteps.shift();
+				setTimeout(nextStep.bind(null, nextSteps), seconds);
+			}
 		}
 	},
 	steps = [
