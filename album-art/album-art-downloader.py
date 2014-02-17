@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 ##########################################################################
-# Copyright 2009 Broadcom Corporation
-#
 # Licensed under the Apache License, Version 2.0 (the "License"); 
 # you may not use this file except in compliance with the License. 
 # You may obtain a copy of the License at 
@@ -17,8 +15,9 @@
 ###########################################################################
 
 # Purpose:
-
-
+# Download cover art for the given file into a separate file cover.jpg
+# Use in conjunction with find to get all covers for a set of albums
+# i.e. $ find -name "01*.flac" -exec album-art-downloader.py {} \;
 
 from __future__ import with_statement
 
@@ -66,7 +65,6 @@ def get_artwork(filename):
 	album=flacinfo["album"][0].encode('utf-8')
 	print artist,album
 
-	#cmd = "glyrc cover --artist {0} --album {1} --write cover".format(unicode(artist,'utf-8'),  unicode(album,'utf-8'))
 	folder  =  os.path.dirname(os.path.realpath(filename))
 
 	coverpath = "".join([folder, os.path.sep, "cover.jpg"])
@@ -75,6 +73,5 @@ def get_artwork(filename):
 	cmd = "glyrc cover --artist \"{0}\" --album \"{1}\" --write {2}".format(artist,  album, coverpath)
 	out = get_shell_cmd_output(cmd)
 	print(out)
-
 
 get_artwork(sys.argv[1])
