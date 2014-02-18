@@ -3,6 +3,7 @@ import org.junit.Test;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 /**
@@ -44,7 +45,6 @@ import static org.junit.Assert.*;
  * <li>a player can take a field if not already taken                                 </li>
  * <li>players take turns taking fields until the game is over</li>
  * </ul>
-
  *
  * @see <a href="http://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it">original article</a>
  * @see <a href="http://gojko.net/2009/02/27/thought-provoking-tdd-exercise-at-the-software-craftsmanship-conference/">Gojko's version</a>
@@ -63,20 +63,58 @@ public class TicTacToeTest {
         return availableFields.equals(Collections.EMPTY_SET);
     }
 
-    @Ignore
-	@Test
-	public void a_player_can_take_a_field_that_is_not_taken() {
+    @Test
+    public void a_player_can_take_a_field_that_is_not_taken() {
+        Game g = new Game("A", "B");
+        String fieldIWant = "B";
 
-	}
+        g.takeField("player1", fieldIWant);
 
-    @Ignore
-	@Test
-	public void a_player_can_not_take_a_field_that_is_taken() {
+        assertTrue(g.hasField("player1", fieldIWant));
+    }
+
+    @Test
+    public void a_player_can_not_take_a_field_that_is_taken() {
+        Game g = new Game("A", "B");
+        String fieldIWant = "C";
+        g.takeField("player2", fieldIWant);
+
+        g.takeField("player1", fieldIWant);
+
+        assertFalse(g.hasField("player1", fieldIWant));
+    }
+
+    @Test
+    public void game_is_over_when_a_player_has_all_fields_in_a_column() {
+
     }
 
     @Ignore
-	@Test
-	public void the_game_should_ensure_players_should_take_turns() {
-	}
+    @Test
+    public void the_game_should_ensure_players_should_take_turns() {
+    }
 
+}
+
+class Game {
+    Set<String> availableFields = new HashSet<String>();
+    Set<String> player1Fields = new HashSet<String>();
+    Set<String> player2Fields = new HashSet<String>();
+
+    Game(String... fields) {
+        availableFields.addAll(asList(fields));
+    }
+
+    void takeField(String player, String fieldIWant) {
+        if (availableFields.contains(fieldIWant)) {
+            availableFields.remove(fieldIWant);
+
+            if (player == "player1") player1Fields.add(fieldIWant);
+            else player2Fields.add(fieldIWant);
+        }
+    }
+
+    boolean hasField(String player, String field) {
+        return (player == "player1" ? player1Fields : player2Fields).contains(field);
+    }
 }
