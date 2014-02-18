@@ -1,4 +1,3 @@
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -58,58 +57,58 @@ public class TicTacToeTest {
     public void a_game_is_over_when_all_fields_are_taken() {
         Set<String> availableFields = EMPTY_SET;
 
-        assertTrue(isGameOver(availableFields, EMPTY_SET, EMPTY_SET, EMPTY_SET, EMPTY_SET, EMPTY_SET));
+        assertTrue(Game.isGameOver(availableFields, EMPTY_SET, EMPTY_SET, EMPTY_SET, EMPTY_SET, EMPTY_SET));
     }
 
     @Test
     public void a_game_is_over_when_all_fields_in_a_column_are_taken_by_a_player() {
 
-        Set<Set<String>> columns = buildSetOfSetsOfStrings(
+        Set<Set<String>> columns = Game.buildSetOfSetsOfStrings(
                 new String[]{"A1", "B1"},
                 new String[]{"A2", "B2"}
         );
 
-        Set<String> availableFields = buildAllAvailableFields(columns);
+        Set<String> availableFields = Game.buildAllAvailableFields(columns);
 
         Set<String> player1Fields = new HashSet<>();
-        takeField(availableFields, player1Fields, "A2");
-        takeField(availableFields, player1Fields, "B2");
+        Game.takeField(availableFields, player1Fields, "A2");
+        Game.takeField(availableFields, player1Fields, "B2");
 
-        assertTrue(isGameOver(availableFields, columns, EMPTY_SET, EMPTY_SET, player1Fields, EMPTY_SET));
+        assertTrue(Game.isGameOver(availableFields, columns, EMPTY_SET, EMPTY_SET, player1Fields, EMPTY_SET));
     }
 
     @Test
     public void a_game_is_over_when_all_fields_in_a_row_are_taken_by_a_player() {
 
-        Set<Set<String>> rows = buildSetOfSetsOfStrings(
+        Set<Set<String>> rows = Game.buildSetOfSetsOfStrings(
                 new String[]{"A1", "A2"},
                 new String[]{"B1", "B2"}
         );
 
-        Set<String> availableFields = buildAllAvailableFields(rows);
+        Set<String> availableFields = Game.buildAllAvailableFields(rows);
 
         Set<String> player1Fields = new HashSet<>();
-        takeField(availableFields, player1Fields, "B1");
-        takeField(availableFields, player1Fields, "B2");
+        Game.takeField(availableFields, player1Fields, "B1");
+        Game.takeField(availableFields, player1Fields, "B2");
 
-        assertTrue(isGameOver(availableFields, EMPTY_SET, rows, EMPTY_SET, player1Fields, EMPTY_SET));
+        assertTrue(Game.isGameOver(availableFields, EMPTY_SET, rows, EMPTY_SET, player1Fields, EMPTY_SET));
     }
 
     @Test
     public void a_game_is_over_when_all_fields_in_a_diagonal_are_taken_by_a_player() {
 
-        Set<Set<String>> diagonals = buildSetOfSetsOfStrings(
+        Set<Set<String>> diagonals = Game.buildSetOfSetsOfStrings(
                 new String[]{"A1", "B2"},
                 new String[]{"B1", "A2"}
         );
 
-        Set<String> availableFields = buildAllAvailableFields(diagonals);
+        Set<String> availableFields = Game.buildAllAvailableFields(diagonals);
 
         Set<String> player1Fields = new HashSet<>();
-        takeField(availableFields, player1Fields, "A1");
-        takeField(availableFields, player1Fields, "B2");
+        Game.takeField(availableFields, player1Fields, "A1");
+        Game.takeField(availableFields, player1Fields, "B2");
 
-        assertTrue(isGameOver(availableFields, EMPTY_SET, EMPTY_SET, diagonals, player1Fields, EMPTY_SET));
+        assertTrue(Game.isGameOver(availableFields, EMPTY_SET, EMPTY_SET, diagonals, player1Fields, EMPTY_SET));
     }
 
 
@@ -121,7 +120,7 @@ public class TicTacToeTest {
 
         String fieldIWant = "B";
 
-        takeField(availableFields, player1Fields, fieldIWant);
+        Game.takeField(availableFields, player1Fields, fieldIWant);
 
         assertTrue(player1Fields.contains(fieldIWant));
     }
@@ -137,7 +136,7 @@ public class TicTacToeTest {
 
         String fieldIWant = "C";
 
-        takeField(availableFields, player1Fields, fieldIWant);
+        Game.takeField(availableFields, player1Fields, fieldIWant);
 
         assertFalse(player1Fields.contains(fieldIWant));
     }
@@ -149,27 +148,30 @@ public class TicTacToeTest {
 
         currentPlayersFields = previousPlayersFields;
         try {
-            ensurePlayersAreTakingTurns(previousPlayersFields, currentPlayersFields);
+            Game.ensurePlayersAreTakingTurns(previousPlayersFields, currentPlayersFields);
         } catch (Exception e) {
             // OK
             return;
         }
         fail("Did not get exception");
     }
+}
 
-    private static void ensurePlayersAreTakingTurns(Set<String> previousPlayersFields, Set<String> currentPlayersFields) {
+
+class Game {
+
+    static void ensurePlayersAreTakingTurns(Set<String> previousPlayersFields, Set<String> currentPlayersFields) {
         if(previousPlayersFields == currentPlayersFields) throw new RuntimeException();
     }
 
-
-    private static Set<String> buildAllAvailableFields(Set<Set<String>> setOfSets) {
+    static Set<String> buildAllAvailableFields(Set<Set<String>> setOfSets) {
         Set<String> availableFields = new HashSet<>();
 
         for(Set<String> set: setOfSets)                                 availableFields.addAll(set);
         return availableFields;
     }
 
-    private static Set<Set<String>> buildSetOfSetsOfStrings(String[]... columns) {
+    static Set<Set<String>> buildSetOfSetsOfStrings(String[]... columns) {
         Set<Set<String>> allCols = new HashSet<>();
 
         for(String[] cArr : columns) {
@@ -203,7 +205,7 @@ public class TicTacToeTest {
         return hasColumn;
     }
 
-    private static boolean isGameOver(
+    static boolean isGameOver(
             Set<String> availableFields,
             Set<Set<String>> columns,
             Set<Set<String>> rows,
@@ -227,8 +229,6 @@ public class TicTacToeTest {
                 hasDiagonal(player, diagonals);
     }
 
-
-
     static void takeField(Set<String> availableFields, Set<String> playerFields, String fieldIWant) {
         if(availableFields.contains(fieldIWant)){
             availableFields.remove(fieldIWant);
@@ -237,4 +237,3 @@ public class TicTacToeTest {
         }
     }
 }
-
