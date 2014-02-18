@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -25,9 +26,14 @@ import static org.junit.Assert.fail;
  * </li>
  * </ol>
  * <p/>
- * <p>The member of the pair without their hands on the keyboard must be very strict in enforcing these rules, especially 4.1 and 4.2</p>
+ * <p>The member of the pair without their hands on the keyboard must be very strict in enforcing these
+ * rules, especially 4.1 and 4.2</p>
  * <p/>
- * <p>After some respectable time coding, contrast and compare solutions. Consider the classes created. How many? How big? What mutable ownedBy? Consider the methods created How many? How long? Apply a few simple design metrics. How was the experience of working this way different from the usual? How could these ideas be applied in your day job?</p>
+ * <p>After some respectable time coding, contrast and compare solutions. Consider the classes created.
+ * How many? How big? What mutable ownedBy? Consider the methods created How many? How long?
+ * Apply a few simple design metrics. How was the experience of working this way different from the usual?
+ * How could these ideas be applied in your day job?
+ * </p>
  * <p/>
  * <ul>
  * <li>a game is over when all fields are taken</li>
@@ -35,60 +41,30 @@ import static org.junit.Assert.fail;
  * <li>a game is over when all fields in a row are taken by a player        </li>
  * <li>a game is over when all fields in a diagonal are taken by a player        </li>
  * <li>a player can take a field if not already taken                                 </li>
+ * <li>players take turns taking fields until the game is over</li>
  * </ul>
- * players take turns taking fields until the game is over
+
  *
  * @see <a href="http://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it">original article</a>
  * @see <a href="http://gojko.net/2009/02/27/thought-provoking-tdd-exercise-at-the-software-craftsmanship-conference/">Gojko's version</a>
  * @see <a href="http://www.codersdojo.com/review/f80623b0fc6c2951dbcd8dc33f9dfb842212e788?page=19#first_modification">Stepwise TDD as if you meant it</a>
  */
 public class TicTacToeTest {
+
+    @Ignore
 	@Test
 	public void a_player_can_take_a_field_that_is_not_taken() {
-		Cell cell = new Cell();
-		Cell.Player player1 = Cell.Player.PLAYER_1;
-		cell.takeCell(player1);
-		assertEquals(cell.ownedBy , player1);
+
 	}
 
+    @Ignore
 	@Test
 	public void a_player_can_not_take_a_field_that_is_taken() {
-		try {
-			Cell cell = new Cell();
-			cell.ownedBy = Cell.Player.PLAYER_2;
-			Cell.Player player1 = Cell.Player.PLAYER_1;
-			cell.takeCell(player1);
-		} catch (Exception e) { //OK
-			return;
-		}
-		fail("Should have failed");
-	}
+    }
 
+    @Ignore
 	@Test
-	public void players_should_take_turns() {
-		String current = "player1";
-		String lastPlayer = "player1";
-		try {
-			checkNonRepeatingPlayer(current, lastPlayer);
-		} catch (Exception e) {
-			//ok
-			return;
-		}
-		;
-		fail("Should have failed");
+	public void the_game_should_ensure_players_should_take_turns() {
 	}
 
-	private void checkNonRepeatingPlayer(String current, String lastPlayer) {
-		if (current.equals(lastPlayer)) throw new RuntimeException("Players must take turns playing");
-	}
-}
-
-class Cell {
-	enum Player { NONE,PLAYER_1,PLAYER_2 }
-	Player ownedBy = Player.NONE;
-
-	void takeCell(Player player) {
-		if(ownedBy == Player.NONE ) ownedBy = player;
-		else throw new RuntimeException("Already taken");
-	}
 }
