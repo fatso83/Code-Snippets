@@ -149,12 +149,16 @@ public class TicTacToeTest {
 
         currentPlayersFields = previousPlayersFields;
         try {
-            if(previousPlayersFields == currentPlayersFields) throw new RuntimeException();
+            ensurePlayersAreTakingTurns(previousPlayersFields, currentPlayersFields);
         } catch (Exception e) {
             // OK
             return;
         }
         fail("Did not get exception");
+    }
+
+    private static void ensurePlayersAreTakingTurns(Set<String> previousPlayersFields, Set<String> currentPlayersFields) {
+        if(previousPlayersFields == currentPlayersFields) throw new RuntimeException();
     }
 
 
@@ -176,19 +180,19 @@ public class TicTacToeTest {
         return allCols;
     }
 
-    private boolean hasColumn(Set<String> player1Fields, Set<Set<String>> columns) {
+    private static boolean hasColumn(Set<String> player1Fields, Set<Set<String>> columns) {
         return playerSetContainsOneOfSets(player1Fields, columns);
     }
 
-    private boolean hasRow(Set<String> player1Fields, Set<Set<String>> columns) {
+    private static boolean hasRow(Set<String> player1Fields, Set<Set<String>> columns) {
         return playerSetContainsOneOfSets(player1Fields, columns);
     }
 
-    private boolean hasDiagonal(Set<String> player1Fields, Set<Set<String>> columns) {
+    private static boolean hasDiagonal(Set<String> player1Fields, Set<Set<String>> columns) {
         return playerSetContainsOneOfSets(player1Fields, columns);
     }
 
-    private boolean playerSetContainsOneOfSets(Set<String> player1Fields, Set<Set<String>> columns) {
+    private static boolean playerSetContainsOneOfSets(Set<String> player1Fields, Set<Set<String>> columns) {
         boolean hasColumn = false;
         for( Set<String> c : columns) {
             if(player1Fields.containsAll(c)) {
@@ -199,7 +203,7 @@ public class TicTacToeTest {
         return hasColumn;
     }
 
-    private boolean isGameOver(
+    private static boolean isGameOver(
             Set<String> availableFields,
             Set<Set<String>> columns,
             Set<Set<String>> rows,
@@ -212,7 +216,7 @@ public class TicTacToeTest {
                 hasWinState(p2,columns,rows,diagonals);
     }
 
-    private boolean hasWinState(
+    private static boolean hasWinState(
             Set<String> player,
             Set<Set<String>> columns,
             Set<Set<String>> rows,
@@ -225,7 +229,7 @@ public class TicTacToeTest {
 
 
 
-    void takeField(Set<String> availableFields, Set<String> playerFields, String fieldIWant) {
+    static void takeField(Set<String> availableFields, Set<String> playerFields, String fieldIWant) {
         if(availableFields.contains(fieldIWant)){
             availableFields.remove(fieldIWant);
 
