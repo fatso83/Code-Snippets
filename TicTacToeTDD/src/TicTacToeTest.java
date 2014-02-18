@@ -1,8 +1,9 @@
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * TDD as if you Meant It
@@ -50,6 +51,17 @@ import static org.junit.Assert.fail;
  * @see <a href="http://www.codersdojo.com/review/f80623b0fc6c2951dbcd8dc33f9dfb842212e788?page=19#first_modification">Stepwise TDD as if you meant it</a>
  */
 public class TicTacToeTest {
+
+    @Test
+    public void a_game_is_over_when_all_fields_are_taken() {
+        Set<Integer> availableFields = Collections.EMPTY_SET;
+
+        assertTrue(isGameOver(availableFields));
+    }
+
+    private boolean isGameOver(Set<Integer> availableFields) {
+        return availableFields.equals(Collections.EMPTY_SET);
+    }
 
     @Ignore
 	@Test
