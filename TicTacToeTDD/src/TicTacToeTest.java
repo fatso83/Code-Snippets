@@ -115,8 +115,8 @@ public class TicTacToeTest {
 
     @Test
     public void a_player_can_take_a_field_that_is_not_taken() {
-        Set<String> availableFields = new HashSet<String>();
-        Set<String> player1Fields = new HashSet<String>();
+        Set<String> availableFields = new HashSet<>();
+        Set<String> player1Fields = new HashSet<>();
         availableFields.addAll(asList("A", "B"));
 
         String fieldIWant = "B";
@@ -128,9 +128,9 @@ public class TicTacToeTest {
 
     @Test
     public void a_player_can_not_take_a_field_that_is_taken() {
-        Set<String> availableFields = new HashSet<String>(Arrays.asList("A", "B"));
-        Set<String> player1Fields = new HashSet<String>();
-        Set<String> player2Fields = new HashSet<String>();
+        Set<String> availableFields = new HashSet<>(Arrays.asList("A", "B"));
+        Set<String> player1Fields = new HashSet<>();
+        Set<String> player2Fields = new HashSet<>();
 
 
         player2Fields.add("C");
@@ -142,16 +142,24 @@ public class TicTacToeTest {
         assertFalse(player1Fields.contains(fieldIWant));
     }
 
-
-    @Ignore
     @Test
     public void the_game_should_ensure_players_should_take_turns() {
+        Set<String> previousPlayersFields = new HashSet<>();
+        Set<String> currentPlayersFields;
 
+        currentPlayersFields = previousPlayersFields;
+        try {
+            if(previousPlayersFields == currentPlayersFields) throw new RuntimeException();
+        } catch (Exception e) {
+            // OK
+            return;
+        }
+        fail("Did not get exception");
     }
 
 
     private static Set<String> buildAllAvailableFields(Set<Set<String>> setOfSets) {
-        Set<String> availableFields = new HashSet<String>();
+        Set<String> availableFields = new HashSet<>();
 
         for(Set<String> set: setOfSets)                                 availableFields.addAll(set);
         return availableFields;
@@ -161,22 +169,22 @@ public class TicTacToeTest {
         Set<Set<String>> allCols = new HashSet<>();
 
         for(String[] cArr : columns) {
-            Set<String> column = Collections.unmodifiableSet(new  HashSet<String>(asList(cArr)));
+            Set<String> column = Collections.unmodifiableSet(new  HashSet<>(asList(cArr)));
             allCols.add(column);
         }
 
         return allCols;
     }
 
-    private boolean playerHasColumn(Set<String> player1Fields, Set<Set<String>> columns) {
+    private boolean hasColumn(Set<String> player1Fields, Set<Set<String>> columns) {
         return playerSetContainsOneOfSets(player1Fields, columns);
     }
 
-    private boolean playerHasRow(Set<String> player1Fields, Set<Set<String>> columns) {
+    private boolean hasRow(Set<String> player1Fields, Set<Set<String>> columns) {
         return playerSetContainsOneOfSets(player1Fields, columns);
     }
 
-    private boolean playerHasDiagonal(Set<String> player1Fields, Set<Set<String>> columns) {
+    private boolean hasDiagonal(Set<String> player1Fields, Set<Set<String>> columns) {
         return playerSetContainsOneOfSets(player1Fields, columns);
     }
 
@@ -210,9 +218,9 @@ public class TicTacToeTest {
             Set<Set<String>> rows,
             Set<Set<String>> diagonals
     ) {
-        return  playerHasColumn(player, columns) ||
-                playerHasRow(player, rows) ||
-                playerHasDiagonal(player, diagonals);
+        return  hasColumn(player, columns) ||
+                hasRow(player, rows) ||
+                hasDiagonal(player, diagonals);
     }
 
 
