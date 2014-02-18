@@ -74,7 +74,9 @@ public class TicTacToeTest {
         );
 
         Set<String> player1Fields = new HashSet<>();
+        Set<String> player2Fields = new HashSet<>();
         g.takeField(player1Fields, "A2");
+        g.takeField(player2Fields, "B1");
         g.takeField(player1Fields, "B2");
 
         assertTrue(g.isGameOver(player1Fields));
@@ -85,13 +87,15 @@ public class TicTacToeTest {
 
 
         Game g = new Game(
-
                 new String[]{"A1", "A2"},
                 new String[]{"B1", "B2"}
         );
 
         Set<String> player1Fields = new HashSet<>();
+        Set<String> player2Fields = new HashSet<>();
+
         g.takeField(player1Fields, "B1");
+        g.takeField(player2Fields, "A1");
         g.takeField(player1Fields, "B2");
 
         assertTrue(g.isGameOver(player1Fields));
@@ -106,7 +110,9 @@ public class TicTacToeTest {
         );
 
         Set<String> player1Fields = new HashSet<>();
+        Set<String> player2Fields = new HashSet<>();
         g.takeField(player1Fields, "A1");
+        g.takeField(player2Fields, "A2");
         g.takeField(player1Fields, "B2");
 
         assertTrue(g.isGameOver(player1Fields));
@@ -171,14 +177,7 @@ class Game {
     }
 
     void ensurePlayersAreTakingTurns(Set<String> currentPlayersFields) {
-        if (previousPlayersFields == currentPlayersFields) throw new RuntimeException();
-    }
-
-    static Set<String> buildAvailableFields(Set<Set<String>> setOfSets) {
-        Set<String> availableFields = new HashSet<>();
-
-        for (Set<String> set : setOfSets) availableFields.addAll(set);
-        return availableFields;
+        if (previousPlayersFields == currentPlayersFields) throw new RuntimeException("Must take turns");
     }
 
     static Set<Set<String>> buildSetOfWinConditions(String[]... columns) {
@@ -203,9 +202,7 @@ class Game {
         return hasColumn;
     }
 
-    boolean isGameOver(
-            Set<String>... players
-    ) {
+    boolean isGameOver( Set<String>... players ) {
         if (availableFields.equals(Collections.EMPTY_SET)) return true;
         for (Set<String> p : players) if (hasWinSet(p)) return true;
         return false;
@@ -218,10 +215,13 @@ class Game {
     }
 
     void takeField(Set<String> playerFields, String fieldIWant) {
+        ensurePlayersAreTakingTurns(playerFields);
         if (availableFields.contains(fieldIWant)) {
             availableFields.remove(fieldIWant);
 
             playerFields.add(fieldIWant);
+
+            previousPlayersFields = playerFields;
         }
     }
 }
