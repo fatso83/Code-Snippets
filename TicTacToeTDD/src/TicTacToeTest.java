@@ -6,6 +6,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 import static java.util.Collections.EMPTY_SET;
+
 /**
  * TDD as if you Meant It
  * <h2>The Rules</h2>
@@ -45,7 +46,6 @@ import static java.util.Collections.EMPTY_SET;
  * <li>a player can take a field if not already taken                                 </li>
  * <li>players take turns taking fields until the game is over</li>
  * </ul>
-
  *
  * @see <a href="http://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it">original article</a>
  * @see <a href="http://gojko.net/2009/02/27/thought-provoking-tdd-exercise-at-the-software-craftsmanship-conference/">Gojko's version</a>
@@ -55,79 +55,79 @@ public class TicTacToeTest {
 
     @Test
     public void a_game_is_over_when_all_fields_are_taken() {
-        Set<String> availableFields = EMPTY_SET;
 
-        assertTrue(Game.isGameOver(availableFields, EMPTY_SET, EMPTY_SET, EMPTY_SET));
+        Game g = new Game(
+                new String[]{}
+        );
+
+        Set playerSet = EMPTY_SET;
+        assertTrue(g.isGameOver(playerSet));
     }
 
     @Test
     public void a_game_is_over_when_all_fields_in_a_column_are_taken_by_a_player() {
 
-        Set<Set<String>> columns = Game.buildSetOfSetsOfStrings(
+
+        Game g = new Game(
                 new String[]{"A1", "B1"},
                 new String[]{"A2", "B2"}
         );
 
-        Set<String> availableFields = Game.buildAvailableFields(columns);
-
         Set<String> player1Fields = new HashSet<>();
-        Game.takeField(availableFields, player1Fields, "A2");
-        Game.takeField(availableFields, player1Fields, "B2");
+        g.takeField(player1Fields, "A2");
+        g.takeField(player1Fields, "B2");
 
-        assertTrue(Game.isGameOver(availableFields, columns, player1Fields, EMPTY_SET));
+        assertTrue(g.isGameOver(player1Fields));
     }
 
     @Test
     public void a_game_is_over_when_all_fields_in_a_row_are_taken_by_a_player() {
 
-        Set<Set<String>> rows = Game.buildSetOfSetsOfStrings(
+
+        Game g = new Game(
+
                 new String[]{"A1", "A2"},
                 new String[]{"B1", "B2"}
         );
 
-        Set<String> availableFields = Game.buildAvailableFields(rows);
-
         Set<String> player1Fields = new HashSet<>();
-        Game.takeField(availableFields, player1Fields, "B1");
-        Game.takeField(availableFields, player1Fields, "B2");
+        g.takeField(player1Fields, "B1");
+        g.takeField(player1Fields, "B2");
 
-        assertTrue(Game.isGameOver(availableFields, rows, player1Fields, EMPTY_SET));
+        assertTrue(g.isGameOver(player1Fields));
     }
 
     @Test
     public void a_game_is_over_when_all_fields_in_a_diagonal_are_taken_by_a_player() {
 
-        Set<Set<String>> diagonals = Game.buildSetOfSetsOfStrings(
+        Game g = new Game(
                 new String[]{"A1", "B2"},
                 new String[]{"B1", "A2"}
         );
 
-        Set<String> availableFields = Game.buildAvailableFields(diagonals);
-
         Set<String> player1Fields = new HashSet<>();
-        Game.takeField(availableFields, player1Fields, "A1");
-        Game.takeField(availableFields, player1Fields, "B2");
+        g.takeField(player1Fields, "A1");
+        g.takeField(player1Fields, "B2");
 
-        assertTrue(Game.isGameOver(availableFields, diagonals, player1Fields, EMPTY_SET));
+        assertTrue(g.isGameOver(player1Fields));
     }
 
 
     @Test
     public void a_player_can_take_a_field_that_is_not_taken() {
-        Set<String> availableFields = new HashSet<>();
         Set<String> player1Fields = new HashSet<>();
-        availableFields.addAll(asList("A", "B"));
+        Game g = new Game(new String[]{"A", "B"});
 
         String fieldIWant = "B";
 
-        Game.takeField(availableFields, player1Fields, fieldIWant);
+        g.takeField(player1Fields, fieldIWant);
 
         assertTrue(player1Fields.contains(fieldIWant));
     }
 
     @Test
     public void a_player_can_not_take_a_field_that_is_taken() {
-        Set<String> availableFields = new HashSet<>(Arrays.asList("A", "B"));
+        Game g = new Game(new String[]{"A", "B"});
         Set<String> player1Fields = new HashSet<>();
         Set<String> player2Fields = new HashSet<>();
 
@@ -136,15 +136,15 @@ public class TicTacToeTest {
 
         String fieldIWant = "C";
 
-        Game.takeField(availableFields, player1Fields, fieldIWant);
+        g.takeField(player1Fields, fieldIWant);
 
         assertFalse(player1Fields.contains(fieldIWant));
     }
 
     @Test
     public void the_game_should_ensure_players_should_take_turns() {
-        Set<String> currentPlayersFields= new HashSet<>();
-        Game g = new Game();
+        Set<String> currentPlayersFields = new HashSet<>();
+        Game g = new Game(new String[]{});
         g.previousPlayersFields = currentPlayersFields;
 
         try {
@@ -159,24 +159,33 @@ public class TicTacToeTest {
 
 
 class Game {
+    Set<Set<String>> winConditions = new HashSet<>();
+    Set<String> availableFields = new HashSet<>();
     Set<String> previousPlayersFields;
 
+    /* The union of the set of win conditions is equal to the total set of fields in the game */
+    Game(String[]... winConditionsArr) {
+        Set<Set<String>> winConditions = buildSetOfWinConditions(winConditionsArr);
+        for (Set<String> s : winConditions) availableFields.addAll(s);
+        this.winConditions = winConditions;
+    }
+
     void ensurePlayersAreTakingTurns(Set<String> currentPlayersFields) {
-        if(previousPlayersFields == currentPlayersFields) throw new RuntimeException();
+        if (previousPlayersFields == currentPlayersFields) throw new RuntimeException();
     }
 
     static Set<String> buildAvailableFields(Set<Set<String>> setOfSets) {
         Set<String> availableFields = new HashSet<>();
 
-        for(Set<String> set: setOfSets)  availableFields.addAll(set);
+        for (Set<String> set : setOfSets) availableFields.addAll(set);
         return availableFields;
     }
 
-    static Set<Set<String>> buildSetOfSetsOfStrings(String[]... columns) {
+    static Set<Set<String>> buildSetOfWinConditions(String[]... columns) {
         Set<Set<String>> allCols = new HashSet<>();
 
-        for(String[] cArr : columns) {
-            Set<String> column = Collections.unmodifiableSet(new  HashSet<>(asList(cArr)));
+        for (String[] cArr : columns) {
+            Set<String> column = Collections.unmodifiableSet(new HashSet<>(asList(cArr)));
             allCols.add(column);
         }
 
@@ -185,8 +194,8 @@ class Game {
 
     private static boolean playerSetContainsOneOfSets(Set<String> player1Fields, Set<Set<String>> columns) {
         boolean hasColumn = false;
-        for( Set<String> c : columns) {
-            if(player1Fields.containsAll(c)) {
+        for (Set<String> c : columns) {
+            if (player1Fields.containsAll(c)) {
                 hasColumn = true;
                 break;
             }
@@ -194,26 +203,22 @@ class Game {
         return hasColumn;
     }
 
-    static boolean isGameOver(
-            Set<String> availableFields,
-
-            Set<Set<String>> winSets, Set<String> p1,
-            Set<String> p2
+    boolean isGameOver(
+            Set<String>... players
     ) {
-        return availableFields.equals(Collections.EMPTY_SET) ||
-                hasWinSet(p1, winSets) ||
-                hasWinSet(p2, winSets);
+        if (availableFields.equals(Collections.EMPTY_SET)) return true;
+        for (Set<String> p : players) if (hasWinSet(p)) return true;
+        return false;
     }
 
-    private static boolean hasWinSet(
-            Set<String> playerSet,
-            Set<Set<String>> sets
+    private boolean hasWinSet(
+            Set<String> playerSet
     ) {
-        return playerSetContainsOneOfSets(playerSet, sets);
+        return playerSetContainsOneOfSets(playerSet, winConditions);
     }
 
-    static void takeField(Set<String> availableFields, Set<String> playerFields, String fieldIWant) {
-        if(availableFields.contains(fieldIWant)){
+    void takeField(Set<String> playerFields, String fieldIWant) {
+        if (availableFields.contains(fieldIWant)) {
             availableFields.remove(fieldIWant);
 
             playerFields.add(fieldIWant);
