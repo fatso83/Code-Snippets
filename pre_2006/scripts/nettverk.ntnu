@@ -1,0 +1,10 @@
+#!/bin/sh
+source ~kaufman/.bash_aliases
+
+vpnc-disconnect 2>/tmp/feil
+killall dhclient
+killall dhclient3
+iwconfig ath0 essid ntnu key off
+scan > /tmp/scan.tmp
+dhclient3 ath0
+vpnc ntnu

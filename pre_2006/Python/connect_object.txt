@@ -1,0 +1,16 @@
+* Now talking on #pygtk
+
+<kaufman> I'm trying to read this PyGTK2-tutorial, and has come to a section about connect_object(). It says "connect_object() is the same as connect() except a callback function only uses one argument and a callback method, two arguments:
+<kaufman>   def callback_func(object)
+<kaufman>   def callback_meth(self, object)
+<kaufman> where object is usually a widget. connect_object() allows the PyGTK widget methods that only take a single argument (self) to be used as signal handlers"
+
+<kaufman>  self.button.connect_object("clicked", gtk.Widget.destroy, self.window)
+
+<marc> it's the difference between gtk.Widget().destroy and gtk.Widget.destroy
+<marc> so connect_object('blah', method, widget) is the same as:
+<marc> connect('blah', widget.method)
+
+<Juhaz> it changes what object is sent to the callback as first argument. with connect, it's always the same as the widget the signal is connected to, in the example, a button.
+<Juhaz> with connect_object it can be specified, and it's the window
+<kaufman> Thanks

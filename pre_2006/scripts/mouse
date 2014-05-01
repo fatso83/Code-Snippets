@@ -1,0 +1,18 @@
+#!/bin/sh
+PREFIX="sudo"
+
+if [ "$DISPLAY" = ":0.0" ];then
+	PREFIX="xterm -e sudo"
+fi
+	
+
+if [ "on" = "$1" ];then
+	$PREFIX	modprobe psmouse
+elif [ "off" = "$1" ]; then
+	$PREFIX	rmmod psmouse
+else
+	$PREFIX echo -e	"Vennligst gi et argument:"\
+		"\nEks. $0 \"on\"|\"off\"";
+	sleep 2
+	
+fi
