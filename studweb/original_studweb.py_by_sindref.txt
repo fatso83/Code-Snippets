@@ -1,0 +1,136 @@
+#!/local/bin/python
+# -*- coding: utf-8 -*-
+
+import sys
+sys.path.append('/mn/felt/u2/sindrf/twill-0.9')
+import smtplib
+import os
+import twill.commands as tc
+from email.mime.text import MIMEText
+
+
+fnr = "13098335557"     #Ditt fødselsnummer
+pin = "6462"            #Din pinkode
+brukernavn = "kopseng"    #Ditt brukernavn
+
+###################### STEG 1
+######################
+###################### Gar til studentweb, logger inn, lagrer resultat-siden som sweb.html og logger ut.
+
+os.system("date")
+print("Logger inn")
+tc.go("https://studweb.uio.no/as/WebObjects/studentweb2.woa/3/wa/default?inst=UiO")
+tc.fv("2", "fodselsnr", fnr)
+tc.fv("2", "pinkode", pin)
+tc.submit()
+tc.follow('Innsyn')
+tc.follow('Resultater')
+tc.redirect_output('sweb.html')
+tc.show()
+tc.follow('Logg ut') #Logger ut av studentweb
+
+
+###################### STEG 2
+######################
+###################### Apner sweb.html, parser den og sammenligner antall linjer i resultat-tabellen med forrige
+###################### resultat. Om det er storre, sender den en epost i STEG 3.
+
+f = open('sweb.html', 'r')
+t = f.read()
+
+a = t.split('</table>')
+t = a[0].split('<table')
+f.close()
+
+kol = t[2].split('<tr ') # Liste med resultater
+lest = t[2].split('<tr ')
+kar = t[2].split('<tr ')
+for i in range(len(kol)):
+    kol[i] = kol[i] + '\n'
+    lest[i] = lest[i] + '\n'
+    kar[i] = kar[i] + '\n'
+N = len(kol)
+
+try:
+    f = open('antall.dat', 'r')
+    M = f.read(4)
+    M = int(M)
+    print M
+    f.close
+except IOError:  #Forste gang man kjorer programmet
+    print("Filen finnes ikke")
+    M = N
+    f = open('antall.dat', 'w')
+    tilfil = str(M)
+    f.write(tilfil)
+    f.close
+    g = open('res.html', 'w')
+    for linje in lest:
+        g.write(linje)
+    g.close
+    
+for i in range(len(kol)): #Skiller kurs og karakter
+    if(i > 0):
+        tmp = kol[i].split('<td>')
+        tmp2 = tmp[1].split('</td>');
+        kol[i] = tmp2[0] # KURSNAVN
+        tmp3 = tmp[5].split('<td class="align-r">')
+        if(len(tmp3) > 1):
+            kar[i] = tmp3[2] # KARAKTER
+            kar[i] = kar[i].replace('</td>', '')
+        else:
+            kar[i] = ''
+            
+
+
+###################### STEG 3
+######################
+###################### Sender kurs og karakter til eposten!
+
+if(N > M):
+    #Ny rad i resultat-tabellen!
+
+    g = open('res.html', 'r')
+    res = g.readlines()
+    i = 0
+    lokke = 0
+    while lokke == 0:
+        if lest[i] in res: # Finner hvilken rad som er ny
+            i+=1
+        else:
+            lokke = 1
+            kurs = kol[i];
+            karakter = kar[i];
+    
+    msg = MIMEText(kurs + " - " + karakter)
+
+    if kurs == '' or kol == '':
+        msg['Subject'] = "Studentweb er oppdatert"
+        melding = "Studentweb er oppdatert"
+    else:
+        msg['Subject'] = kurs + " - " + karakter
+        melding = kurs + " - " + karakter
+    msg['From'] = brukernavn + '@ulrik.uio.no'
+    msg['To'] = brukernavn + '@ulrik.uio.no'
+    print msg['To']
+    
+    s = smtplib.SMTP('smtp.uio.no')
+    s.sendmail(msg['From'], msg['To'], msg.as_string())
+    s.quit()
+    print("Sender EPOST")
+
+    #Oppdaterer filer
+    f = open('antall.dat', 'w')
+    tilfil = str(N)
+    print tilfil
+    f.write(tilfil)
+    f.close
+
+    g = open('res.html', 'w')
+    for linje in lest:
+        g.write(linje)
+    g.close
+
+os.system("rm sweb.html")
+    
+

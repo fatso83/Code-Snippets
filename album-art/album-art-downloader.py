@@ -70,7 +70,7 @@ def get_artwork(filename):
 	coverpath = "".join([folder, os.path.sep, "cover.jpg"])
 	if os.path.isfile(coverpath): return
 
-	cmd = "glyrc cover --artist \"{0}\" --album \"{1}\" --write {2}".format(artist,  album, coverpath)
+	cmd = "glyrc cover --artist \'{0}\' --album \'{1}\' --write \'{2}\'".format(artist,  album, coverpath)
 	out = get_shell_cmd_output(cmd)
 	print(out)
 

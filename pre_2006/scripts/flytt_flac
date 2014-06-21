@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function vis_bruk
+{
+	echo -e "Slik bruker du $0\n$0 torrentfil.torrent nedlastet_objekt"
+}
+
+#Parameter check
+if [ x"$1" == "x" ];then
+	vis_bruk
+	exit
+elif echo $1|grep -v '.torrent' > /dev/null;then #if not torrent, then...
+	vis_bruk
+	exit
+fi
+
+if [ x"$2" == "x" ];then
+	vis_bruk
+	exit
+fi
+
+torrent="$1"
+objekt="$2"
+uploadpath="/mnt/gigant/Utvidet hjemmemappe/torrents/uploads"
+flacdir="/mnt/gigant/musikk/FLAC"
+
+mv -i "$torrent" "$uploadpath"/	|| exit
+mv -i "$objekt" "$flacdir"/		|| exit
+ln -s "$flacdir"/"$(basename "$objekt")" "$uploadpath"/
+
+exit 0
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+vpnc ntnu
+echo 0 > /proc/sys/net/ipv4/conf/ath0/rp_filter 
+echo 0 > /proc/sys/net/ipv4/conf/vpn0/rp_filter

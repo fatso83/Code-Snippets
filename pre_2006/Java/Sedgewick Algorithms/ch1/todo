@@ -1,0 +1,9 @@
+Make a real Makefile
+Make a number generator for both pairs and single numbers:
+	% num_gen --single 100
+
+	Will generate 100 single random numbers from 0-99
+
+	Must also feature --pair and --help (default)
+
+	Can be in C or NASM-ASM. Practise!
