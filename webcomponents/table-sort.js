@@ -1,3 +1,6 @@
+/**
+ * Lookup table for parsing various table cell types
+ */
 const cellParsers = {
   numeric(cell) {
     return parseInt(cell.innerText, 10);
@@ -13,13 +16,36 @@ const cellParsers = {
 
     return datetimeElem.getAttribute("datetime");
   },
+  duration(cell) {
+    // assuming <time> or other element with datetime attribute being an ISO Duration (ex. PT2H30M)
+    const datetimeElem = cell.querySelector("[datetime]");
+
+    if (!datetimeElem) {
+      return 0;
+    }
+
+    const duration = datetimeElem.getAttribute("datetime");
+    return parseISODurationIntoSeconds(duration);
+  },
   text(cell) {
     return cell.innerText;
   },
 };
 
+function parseISODurationIntoSeconds(iso) {
+  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?/);
+
+  if (!match) return 0;
+
+  const hours = parseInt(match[1] || "0", 10);
+  const minutes = parseInt(match[2] || "0", 10);
+  const seconds = parseFloat(match[3] || "0");
+
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
 /**
- * <table-sort numeric="2,5" datetime="3" />
+ * <table-sort numeric="2,5" datetime="3" duration="4" />
  *
  * Custom Element to progressively enhance static tables
  * with dynamic sorting behavior
@@ -34,6 +60,7 @@ class TableSort extends HTMLElement {
   #sortAsc = true;
   #numericColumns = [];
   #datetimeColumns = [];
+  #durationColumns = [];
   #tbody = null;
 
   connectedCallback() {
@@ -52,17 +79,14 @@ class TableSort extends HTMLElement {
       return;
     }
 
-    if (this.hasAttribute("numeric")) {
-      this.#numericColumns = this.getAttribute("numeric")
+    const parseColumnsFromAttribute = (attributeKey) =>
+      (this.getAttribute(attributeKey) || "")
         .split(",")
         .map((x) => parseInt(x - 1, 10)); // make columns 0-based
-    }
 
-    if (this.hasAttribute("datetime")) {
-      this.#datetimeColumns = this.getAttribute("datetime")
-        .split(",")
-        .map((x) => parseInt(x - 1, 10)); // make columns 0-based
-    }
+    this.#numericColumns = parseColumnsFromAttribute("numeric");
+    this.#datetimeColumns = parseColumnsFromAttribute("datetime");
+    this.#durationColumns = parseColumnsFromAttribute("duration");
 
     // Enhance headers: indicate clickability
     const headers = thead.querySelectorAll("th");
@@ -114,6 +138,8 @@ class TableSort extends HTMLElement {
       return "numeric";
     } else if (this.#datetimeColumns.indexOf(column) > -1) {
       return "datetime";
+    } else if (this.#durationColumns.indexOf(column) > -1) {
+      return "duration";
     }
     return "text";
   }
