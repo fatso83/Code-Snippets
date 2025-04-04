@@ -1,0 +1,198 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Table filtering via CSS</title>
+    <style>
+      #test-results {
+        width: 100%;
+
+        /*
+        * The attribute selector matches attributes whose value is a
+        * whitespace-separated list of words, one of which is exactly value.
+        * ref https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+        */
+        &[data-filtered~="failing"] tr:has(td[data-result="fail"]),
+        &[data-filtered~="skipped"] tr:has(td[data-result="skip"]),
+        &[data-filtered~="passing"] tr:has(td[data-result="pass"]) {
+          display: none;
+        }
+
+        tr:has(td[data-result="fail"]) {
+          background-color: red;
+        }
+        tr:has(td[data-result="skip"]) {
+          background-color: lightgray;
+        }
+        tr:has(td[data-result="pass"]) {
+          background-color: lightgreen;
+        }
+
+        th:nth-child(2) {
+          width: 7em;
+        }
+      }
+    </style>
+
+    <script type="module">
+      function setupFiltering() {
+        const resultTable = document.getElementById("test-results");
+        const filtersForm = document.getElementById("filters");
+
+        function getTestCategoriesToFilter() {
+          return (resultTable.dataset.filtered || "").split(" ");
+        }
+
+        function updateTestResultFilter(newTestResultArray) {
+          resultTable.dataset.filtered = newTestResultArray.join(" ");
+        }
+
+        function addTestResultFilter(testResult) {
+          updateTestResultFilter(
+            getTestCategoriesToFilter().concat([testResult]),
+          );
+        }
+
+        function removeTestResultFilter(testResult) {
+          updateTestResultFilter(
+            getTestCategoriesToFilter().filter((o) => o != testResult),
+          );
+        }
+
+        // we capture the event on its way downwards through the DOM, before bubbling up
+        const useEventCapturing = true;
+        filtersForm.addEventListener(
+          "change",
+          (event) => {
+            const clickedElement = event.target;
+            console.assert(
+              clickedElement.type !== "checkbox",
+              "Expected only to capture checkboxes ... Has the DOM changed?",
+            );
+
+            if (clickedElement.checked) {
+              removeTestResultFilter(clickedElement.name);
+            } else {
+              addTestResultFilter(clickedElement.name);
+            }
+          },
+          useEventCapturing,
+        );
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        setupFiltering();
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Demo for using attribute selectors to do table filtering</h1>
+    <p>
+      This shows how to avoid needing elaborate javascript for filtering out
+      table rows matching a given criteria. Instead of querying the DOM in
+      javascript, matching elements manually, I utilize the fact that CSS is
+      able to match elements based on their attributes. Usually, I simply match
+      on the binary presence of an attribute, but in this case I wanted to match
+      when the attribute <em>contained</em> a given value.
+    </p>
+
+    <a
+      href="https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors"
+      >MDN</a
+    >
+    tells us how to use the <code>[att~=val]</code> selector:
+    <blockquote>
+      (The attribute selector) matches attributes whose value is a
+      whitespace-separated list of words, one of which is exactly value.
+    </blockquote>
+
+    <p>
+      This means the only thing I need to react to when checking a filter is to
+      update the test result table's `data-filtered` attribute and add the name
+      of the checkbox. The actual filtering will then be done by the browser's
+      rendering engine when matching on a rule such as:
+    </p>
+
+    <code>
+      <pre>
+      [data-filtered~="passing"] tr:has(td[data-result="pass"]) { 
+        display: none;
+      }
+    </pre
+      >
+    </code>
+    <h2>Simplifying JS by switching on attribute names</h2>
+    <p>
+      Do note that one could simplify the javascript code by utilising
+      additional data attributes! Instead of a single attribute with up to
+      <em>N</em> elements, you add up to <em>N</em> data attributes! As it is, I
+      have four tiny utility functions to get, set and modify the list of filter
+      values. These could be removed by doing this:
+    </p>
+
+    <code>
+      <pre>
+        // javascript
+        const attrName = `filter-${clickedElement.name}`;
+        if(clickedElement.checked) { delete clickedElement.dataset[attrName]; }
+        else { dataset[attrName] = ''; }
+
+        // css selector
+        [data-filtered-skipped] tr:has(td[data-result="skip"]),
+        [data-filtered-failing] tr:has(td[data-result="fail"]),
+        [data-filtered-passing] tr:has(td[data-result="pass"]) { 
+            display:none;
+        }
+    </pre
+      >
+    </code>
+    <p>
+      Still, maybe there are better alternatives where matching on attribute
+      content matches even better, so I will keep the code as it is :)
+    </p>
+
+    <h2>The demo</h2>
+
+    <form id="filters">
+      <fieldset>
+        <legend>Choose which tests to show</legend>
+        <input type="checkbox" name="failing" checked />
+        <label for="failing">Show failing tests</label>
+        <input type="checkbox" name="passing" checked />
+        <label for="passing">Show passing tests</label>
+        <input type="checkbox" name="skipped" checked />
+        <label for="skipped">Show skipped tests</label>
+      </fieldset>
+    </form>
+
+    <table id="test-results">
+      <caption>
+        Test results
+      </caption>
+      <thead>
+        <tr>
+          <th>Test name</th>
+          <th>Result</th>
+          <th>Failure reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>test_that_foo_is_true</td>
+          <td data-result="fail">False</td>
+          <td>'foo' was false</td>
+        </tr>
+        <tr>
+          <td>test_that_bar_is_not_broken</td>
+          <td data-result="pass">True</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>test_that_baz_is_ok</td>
+          <td data-result="skip">Skipped</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
